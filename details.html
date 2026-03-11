@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hostel Details | Hostel Hub</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+  <h2>🏠 Hostel Hub</h2>
+
+  <ul id="navLinks">
+    <!-- Common links (ALWAYS visible) -->
+    <li><a href="index.html">Home</a></li>
+    <li><a href="listings.html">Hostels</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+
+    <!-- Auth links (JS controlled) -->
+    <li class="auth login"><a href="login.html">Login</a></li>
+    <li class="auth signup"><a href="signup.html">Signup</a></li>
+
+    <!-- User links (JS controlled) -->
+    <li class="user profile"><a href="profile.html">Profile</a></li>
+    <li class="user logout"><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</nav>
+
+
+  <!-- Hostel Details -->
+ <section class="details-container">
+
+<div class="details-image">
+<img id="hostelImage">
+</div>
+
+<div class="details-info">
+
+<h2 id="hostelName"></h2>
+
+<p class="location" id="hostelCity"></p>
+
+<p class="price" id="hostelPrice"></p>
+
+<h3>Facilities</h3>
+<ul id="facilityList"></ul>
+
+<h3>Description</h3>
+<p id="hostelDesc"></p>
+
+<h3>Location</h3>
+<iframe id="hostelMap" width="100%" height="250"></iframe>
+
+<button class="save-btn" onclick="saveHostel()">❤️ Save Hostel</button>
+<button class="book-btn" onclick="openBooking()">Book Now</button>
+
+</div>
+
+</section>
+
+<div id="bookingForm" class="booking-popup">
+
+<div class="form-box">
+
+<h2>Hostel Booking</h2>
+
+<input type="text" placeholder="Full Name" id="userName">
+
+<input type="email" placeholder="Email Address" id="userEmail">
+
+<input type="tel" placeholder="Phone Number" id="userPhone">
+
+<select id="roomType">
+<option>Single Room</option>
+<option>Shared Room</option>
+<option>Double Room</option>
+</select>
+
+<input type="date" id="moveDate">
+
+<br>
+
+<button onclick="submitBooking()">Submit Booking</button>
+<button onclick="closeBooking()">Cancel</button>
+
+</div>
+
+</div>
+
+  <script>
+
+let hostel = JSON.parse(localStorage.getItem("selectedHostel"));
+
+document.getElementById("hostelImage").src = hostel.image;
+document.getElementById("hostelName").innerText = hostel.name;
+document.getElementById("hostelCity").innerText = "📍 " + hostel.city;
+document.getElementById("hostelPrice").innerText = "💰 ₹" + hostel.price + " / month";
+document.getElementById("hostelDesc").innerText =
+hostel.name + " provides comfortable accommodation with good facilities for students and working professionals.";
+
+let facilities = hostel.facilities.split(",");
+let list = document.getElementById("facilityList");
+
+facilities.forEach(function(f){
+let li = document.createElement("li");
+li.innerText = "✔ " + f;
+list.appendChild(li);
+});
+
+document.getElementById("hostelMap").src =
+"https://maps.google.com/maps?q=" + hostel.city + "&output=embed";
+
+
+
+</script>
+
+
+<script>
+
+// OPEN BOOKING FORM
+function openBooking(){
+document.getElementById("bookingForm").style.display="flex";
+}
+
+// CLOSE BOOKING FORM
+function closeBooking(){
+document.getElementById("bookingForm").style.display="none";
+}
+
+// SAVE HOSTEL
+function saveHostel(){
+
+let hostel = JSON.parse(localStorage.getItem("selectedHostel"));
+
+let saved = JSON.parse(localStorage.getItem("savedHostels")) || [];
+
+saved.push(hostel);
+
+localStorage.setItem("savedHostels", JSON.stringify(saved));
+
+alert("Hostel Saved Successfully ❤️");
+
+}
+
+// SUBMIT BOOKING
+function submitBooking(){
+
+let name = document.getElementById("userName").value;
+let email = document.getElementById("userEmail").value;
+let phone = document.getElementById("userPhone").value;
+let room = document.getElementById("roomType").value;
+let date = document.getElementById("moveDate").value;
+
+if(name=="" || email=="" || phone==""){
+alert("Please fill all details");
+return;
+}
+
+let booking = {
+name,
+email,
+phone,
+room,
+date
+};
+
+localStorage.setItem("bookingDetails", JSON.stringify(booking));
+
+alert("Booking Submitted Successfully 🎉");
+
+closeBooking();
+
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hostel Listings | Hostel Hub</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js"></script>
+
+</head>
+<body>
+
+  <!-- Navbar -->
+ <nav class="navbar">
+  <h2>🏠 Hostel Hub</h2>
+
+  <ul id="navLinks">
+    <!-- Common links (ALWAYS visible) -->
+    <li><a href="index.html">Home</a></li>
+    <li><a href="listings.html">Hostels</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+
+    <!-- Auth links (JS controlled) -->
+    <li class="auth login"><a href="login.html">Login</a></li>
+    <li class="auth signup"><a href="signup.html">Signup</a></li>
+
+    <!-- User links (JS controlled) -->
+    <li class="user profile"><a href="profile.html">Profile</a></li>
+    <li class="user logout"><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</nav>
+
+
+  <!-- Main Section -->
+  <div class="listings-container">
+
+    <!-- Filters -->
+     <aside class="filters">
+    <h3>Filters</h3>
+
+    <select id="budgetFilter">
+      <option value="all">All Budgets</option>
+      <option value="5000">Below ₹5000</option>
+      <option value="7000">₹5000 - ₹7000</option>
+      <option value="above">Above ₹7000</option>
+    </select>
+
+    <select id="typeFilter">
+      <option value="all">All Types</option>
+      <option value="Boys">Boys</option>
+      <option value="Girls">Girls</option>
+      <option value="Co-ed">Co-ed</option>
+    </select>
+
+    <label><input type="checkbox" class="facility" value="WiFi"> WiFi</label>
+    <label><input type="checkbox" class="facility" value="Food"> Food</label>
+    <label><input type="checkbox" class="facility" value="Laundry"> Laundry</label>
+
+    <select id="sortPrice">
+      <option value="">Sort by Price</option>
+      <option value="low">Low → High</option>
+      <option value="high">High → Low</option>
+    </select>
+    <label>Room Sharing</label>
+<select id="roomFilter">
+  <option value="all">All Rooms</option>
+  <option value="Single">Single Room</option>
+  <option value="Double">2 Sharing</option>
+  <option value="Triple">3 Sharing</option>
+  <option value="Dorm">Dormitory</option>
+</select>
+
+<label>Gender Preference</label>
+<select id="genderFilter">
+  <option value="all">All</option>
+  <option value="boys">Boys Only</option>
+  <option value="girls">Girls Only</option>
+  <option value="coed">Co-ed</option>
+</select>
+
+<h4>Facilities</h4>
+
+<label><input type="checkbox" class="facility" value="WiFi"> WiFi</label>
+<label><input type="checkbox" class="facility" value="Food"> Food</label>
+<label><input type="checkbox" class="facility" value="Laundry"> Laundry</label>
+<label><input type="checkbox" class="facility" value="AC"> AC</label>
+<label><input type="checkbox" class="facility" value="Washing Machine"> Washing Machine</label>
+<label><input type="checkbox" class="facility" value="Parking"> Parking</label>
+<label><input type="checkbox" class="facility" value="CCTV"> CCTV Security</label>
+<label><input type="checkbox" class="facility" value="Power Backup"> Power Backup</label>
+<label><input type="checkbox" class="facility" value="Study Room"> Study Room</label>
+
+<button onclick="resetFilters()">Reset Filters</button>
+  </aside>
+
+    <!-- Hostel Cards -->
+<section class="hostel-list" id="hostelList">
+  <!-- HYDERABAD -->
+
+<div class="hostel-card"
+data-city="Hyderabad"
+data-price="6000"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Sai Ram Boys Hostel in Ameerpet offers comfortable shared rooms with WiFi, hygienic food and laundry services. It is located close to metro stations and coaching institutes."
+data-map="Ameerpet Hyderabad">
+
+<img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5" alt="Sri Sai Ram Boys Hostel">
+
+<h4>Sri Sai Ram Boys Hostel</h4>
+<p>📍 Ameerpet, Hyderabad</p>
+<p>💰 ₹6000 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Hyderabad"
+data-price="6500"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Balaji Boys Hostel located in Dilsukhnagar provides clean rooms, WiFi, washing machines and quality food. It is ideal for students and working professionals."
+data-map="Dilsukhnagar Hyderabad">
+
+<img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2" alt="Balaji Boys Hostel">
+
+<h4>Balaji Boys Hostel</h4>
+<p>📍 Dilsukhnagar, Hyderabad</p>
+<p>💰 ₹6500 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<!-- VIJAYAWADA -->
+
+<div class="hostel-card"
+data-city="Vijayawada"
+data-price="4800"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Lakshmi Boys Hostel near Benz Circle offers affordable accommodation with WiFi, good food and laundry facilities. The location has easy transport access."
+data-map="Benz Circle Vijayawada">
+
+<img src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4" alt="Sri Lakshmi Boys Hostel">
+
+<h4>Sri Lakshmi Boys Hostel</h4>
+<p>📍 Benz Circle, Vijayawada</p>
+<p>💰 ₹4800 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Vijayawada"
+data-price="5200"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Sai Teja Boys Hostel in Patamata offers comfortable rooms, washing machine facilities, WiFi and quality meals. Suitable for students and employees."
+data-map="Patamata Vijayawada">
+
+<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b" alt="Sai Teja Boys Hostel">
+
+<h4>Sai Teja Boys Hostel</h4>
+<p>📍 Patamata, Vijayawada</p>
+<p>💰 ₹5200 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<!-- VISAKHAPATNAM -->
+
+<div class="hostel-card"
+data-city="Visakhapatnam"
+data-price="5000"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Surya Boys Hostel in Madhurawada provides safe accommodation with WiFi, laundry services and healthy meals for students."
+data-map="Madhurawada Visakhapatnam">
+
+<img src="https://images.unsplash.com/photo-1590490360182-c33d57733427" alt="Sri Surya Boys Hostel">
+
+<h4>Sri Surya Boys Hostel</h4>
+<p>📍 Madhurawada, Visakhapatnam</p>
+<p>💰 ₹5000 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Visakhapatnam"
+data-price="5400"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Sri Durga Boys Hostel located in Gajuwaka provides spacious rooms, washing machines, WiFi and quality food for residents."
+data-map="Gajuwaka Visakhapatnam">
+
+<img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85" alt="Sri Durga Boys Hostel">
+
+<h4>Sri Durga Boys Hostel</h4>
+<p>📍 Gajuwaka, Visakhapatnam</p>
+<p>💰 ₹5400 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<!-- TIRUPATI -->
+
+<div class="hostel-card"
+data-city="Tirupati"
+data-price="4500"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Balaji Boys Hostel in Tirupati offers affordable shared rooms with WiFi, laundry services and hygienic meals."
+data-map="Tirupati">
+
+<img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" alt="Balaji Boys Hostel">
+
+<h4>Balaji Boys Hostel</h4>
+<p>📍 Tirupati</p>
+<p>💰 ₹4500 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Guntur"
+data-price="4500"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Sai Boys Hostel in Guntur offers clean shared rooms with WiFi, nutritious meals and laundry facilities. It is suitable for students and working professionals."
+data-map="Guntur">
+
+<img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae" alt="Sri Sai Boys Hostel">
+
+<h4>Sri Sai Boys Hostel</h4>
+<p>📍 Guntur</p>
+<p>💰 ₹4500 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Guntur"
+data-price="4700"
+data-type="Girls"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Lakshmi Ladies Hostel in Guntur provides safe accommodation for girls with WiFi, washing machine facilities and hygienic food."
+data-map="Guntur">
+
+<img src="https://images.unsplash.com/photo-1560448205-4d9b3e6bb6db" alt="Lakshmi Ladies Hostel">
+
+<h4>Lakshmi Ladies Hostel</h4>
+<p>📍 Guntur</p>
+<p>💰 ₹4700 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+<div class="hostel-card"
+data-city="Nellore"
+data-price="4300"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Durga Boys Hostel in Nellore provides affordable shared rooms with WiFi, good food and laundry services."
+data-map="Nellore">
+
+<img src="https://images.unsplash.com/photo-1560184897-ae75f418493e" alt="Sri Durga Boys Hostel">
+
+<h4>Sri Durga Boys Hostel</h4>
+<p>📍 Nellore</p>
+<p>💰 ₹4300 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Nellore"
+data-price="4600"
+data-type="Co-ed"
+data-room="Double"
+data-rating="4.2"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Balaji Student Hostel in Nellore provides double sharing rooms with WiFi, washing machine facilities and quality meals."
+data-map="Nellore">
+
+<img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf" alt="Balaji Student Hostel">
+
+<h4>Balaji Student Hostel</h4>
+<p>📍 Nellore</p>
+<p>💰 ₹4600 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+<div class="hostel-card"
+data-city="Warangal"
+data-price="4800"
+data-type="Boys"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Venkateswara Boys Hostel in Warangal offers comfortable rooms with WiFi, healthy meals and laundry services."
+data-map="Warangal">
+
+<img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0" alt="Sri Venkateswara Boys Hostel">
+
+<h4>Sri Venkateswara Boys Hostel</h4>
+<p>📍 Warangal</p>
+<p>💰 ₹4800 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+<div class="hostel-card"
+data-city="Karimnagar"
+data-price="4200"
+data-type="Boys"
+data-room="Shared"
+data-rating="3.9"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Sri Sai PG Hostel in Karimnagar offers affordable accommodation with WiFi, laundry facilities and hygienic food."
+data-map="Karimnagar">
+
+<img src="https://images.unsplash.com/photo-1617806118233-18e1de247200" alt="Sai Ram Boys Hostel">
+
+<h4>Sri Sai PG Hostel</h4>
+<p>📍 Karimnagar</p>
+<p>💰 ₹4200 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Karimnagar"
+data-price="4500"
+data-type="Girls"
+data-room="Shared"
+data-rating="4.1"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Padmavathi Ladies Hostel in Karimnagar provides secure accommodation for girls with WiFi, washing machines and quality meals."
+data-map="Karimnagar">
+
+<img src="https://images.pexels.com/photos/1648768/pexels-photo-1648768.jpeg" alt="Padmavathi Ladies Hostel">
+
+<h4>Padmavathi Ladies Hostel</h4>
+<p>📍 Karimnagar</p>
+<p>💰 ₹4500 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+<div class="hostel-card"
+data-city="Ongole"
+data-price="4000"
+data-type="Boys"
+data-room="Shared"
+data-rating="3.8"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Lakshmi Boys Hostel in Ongole offers budget-friendly rooms with WiFi, food and laundry facilities."
+data-map="Ongole">
+
+<img src="https://images.unsplash.com/photo-1560185009-5bf9f2849488" alt="Lakshmi Boys Hostel">
+
+<h4>Lakshmi Boys Hostel</h4>
+<p>📍 Ongole</p>
+<p>💰 ₹4000 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Ongole"
+data-price="4200"
+data-type="Co-ed"
+data-room="Double"
+data-rating="4.0"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Sai Teja Hostel in Ongole provides double sharing rooms with WiFi, washing machine facilities and good food."
+data-map="Ongole">
+
+<img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0" alt="Sai Teja Hostel">
+
+<h4>Sai Teja Hostel</h4>
+<p>📍 Ongole</p>
+<p>💰 ₹4200 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+<div class="hostel-card"
+data-city="Eluru"
+data-price="4100"
+data-type="Boys"
+data-room="Shared"
+data-rating="3.9"
+data-facilities="WiFi,Food,Laundry"
+data-desc="Durga Boys Hostel in Eluru offers affordable accommodation with WiFi, hygienic meals and laundry services."
+data-map="Eluru">
+
+<img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Durga Boys Hostel">
+
+<h4>Durga Boys Hostel</h4>
+<p>📍 Eluru</p>
+<p>💰 ₹4100 / month</p>
+<p>✨ WiFi • Food • Laundry</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+<div class="hostel-card"
+data-city="Eluru"
+data-price="4300"
+data-type="Girls"
+data-room="Shared"
+data-rating="4.0"
+data-facilities="WiFi,Food,Washing Machine"
+data-desc="Sri Sai Ladies Hostel in Eluru provides safe accommodation for girls with WiFi, washing machines and quality food."
+data-map="Eluru">
+
+<img src="https://images.unsplash.com/photo-1600210492493-0946911123ea" alt="Sri Sai Ladies Hostel">
+
+<h4>Sri Sai Ladies Hostel</h4>
+<p>📍 Eluru</p>
+<p>💰 ₹4300 / month</p>
+<p>✨ WiFi • Food • Washing Machine</p>
+
+<button onclick="viewDetails(this)">View Details</button>
+</div>
+
+
+
+
+</section>
+  </div>
+
+  <script>
+
+function viewDetails(button){
+
+let card = button.parentElement;
+
+let hostel = {
+name: card.querySelector("h4").innerText,
+city: card.dataset.city,
+price: card.dataset.price,
+type: card.dataset.type,
+room: card.dataset.room,
+rating: card.dataset.rating,
+facilities: card.dataset.facilities,
+image: card.querySelector("img").src,
+location: card.querySelector("p").innerText
+};
+
+localStorage.setItem("selectedHostel", JSON.stringify(hostel));
+
+window.location.href = "details.html";
+
+}
+
+</script>
+
+</body>
+</html>

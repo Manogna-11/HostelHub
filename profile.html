@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile | Hostel Hub</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Bootstrap Icons (Glyphicons replacement) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+  <h2>🏠 Hostel Hub</h2>
+
+  <ul id="navLinks">
+    <!-- Common links (ALWAYS visible) -->
+    <li><a href="index.html">Home</a></li>
+    <li><a href="listings.html">Hostels</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+
+    <!-- Auth links (JS controlled) -->
+    <li class="auth login"><a href="login.html">Login</a></li>
+    <li class="auth signup"><a href="signup.html">Signup</a></li>
+
+    <!-- User links (JS controlled) -->
+    <li class="user profile"><a href="profile.html">Profile</a></li>
+    <li class="user logout"><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</nav>
+
+
+<section class="profile-container">
+
+  <div class="profile-card">
+
+    <div class="profile-header">
+      <i class="bi bi-person-circle"></i>
+      <h2 id="profileName"></h2>
+    </div>
+
+    <div class="profile-details">
+      <p><i class="bi bi-envelope-fill"></i> <span id="profileEmail"></span></p>
+      <p><i class="bi bi-telephone-fill"></i> <span id="profileMobile"></span></p>
+      <p><i class="bi bi-geo-alt-fill"></i> <span id="profileLocation"></span></p>
+      <p><i class="bi bi-house-door-fill"></i> Saved Hostels: <span id="savedCount">0</span></p>
+    </div>
+
+    <div class="profile-actions">
+      <button>
+        <i class="bi bi-pencil-square"></i> Edit Profile
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+<script src="js/script.js"></script>
+</body>
+</html>

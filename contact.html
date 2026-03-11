@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us | Hostel Hub</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR (reuse your existing navbar) -->
+  <nav class="navbar">
+  <h2>🏠 Hostel Hub</h2>
+
+  <ul id="navLinks">
+    <!-- Common links (ALWAYS visible) -->
+    <li><a href="index.html">Home</a></li>
+    <li><a href="listings.html">Hostels</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+
+    <!-- Auth links (JS controlled) -->
+    <li class="auth login"><a href="login.html">Login</a></li>
+    <li class="auth signup"><a href="signup.html">Signup</a></li>
+
+    <!-- User links (JS controlled) -->
+    <li class="user profile"><a href="profile.html">Profile</a></li>
+    <li class="user logout"><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</nav>
+
+
+  <section class="contact-container">
+
+    <!-- INFO CARDS -->
+    <div class="info-cards" style="color:white">
+      <div class="card">
+        <div class="icon">📍</div>
+        <h4>OUR MAIN OFFICE</h4>
+        <p>Hyderabad, Telangana<br>India</p>
+      </div>
+
+      <div class="card" style="color:white">
+        <div class="icon">📞</div>
+        <h4>PHONE NUMBER</h4>
+        <p>+91 98765 43210</p>
+      </div>
+
+      <div class="card" style="color:white">
+        <div class="icon">📠</div>
+        <h4>FAX</h4>
+        <p>+91 12345 67890</p>
+      </div>
+
+      <div class="card" style="color:white">
+        <div class="icon">✉️</div>
+        <h4>EMAIL</h4>
+        <p>support@hostelhub.com</p>
+      </div>
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="contact-form-box">
+      <h2>Contact Us</h2>
+
+      <form id="contactForm">
+        <input type="text" placeholder="Enter your Name" required>
+        <input type="email" placeholder="Enter a valid email address" required>
+        <textarea placeholder="Enter your message" required></textarea>
+        <button type="submit">SUBMIT</button>
+      </form>
+
+      <p id="successMsg"></p>
+    </div>
+
+  </section>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
