@@ -14,6 +14,17 @@ The project is built using HTML, CSS, and JavaScript and uses LocalStorage to st
 - Local storage for saved data
 
 
+## Screenshots
+
+### Listings page
+![Screenshot 2026-03-11 101426](ss/Screenshot 2026-03-11 101426.png)
+
+### Details page
+![Screenshot 2026-03-11 101748](ss/Screenshot 2026-03-11 101748.png)
+
+### Contact page
+![Screenshot 2026-03-11 101835](ss/Screenshot 2026-03-11 101835.png)
+
 ## Technologies Used
 
 - HTML
