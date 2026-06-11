@@ -23,6 +23,7 @@ import { Route as AuthenticatedComplaintsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAssistantRouteImport } from './routes/_authenticated/assistant'
 import { Route as AuthenticatedAdminStudentsRouteImport } from './routes/_authenticated/admin.students'
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -94,6 +95,12 @@ const AuthenticatedAdminRoomsRoute = AuthenticatedAdminRoomsRouteImport.update({
   path: '/admin/rooms',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/admin/analytics',
+    path: '/admin/analytics',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
@@ -122,6 +130,7 @@ export interface FileRoutesByTo {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
@@ -139,6 +148,7 @@ export interface FileRoutesById {
   '/_authenticated/notices': typeof AuthenticatedNoticesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
   fileRoutesByTo: FileRoutesByTo
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
   id:
@@ -187,6 +199,7 @@ export interface FileRouteTypes {
     | '/_authenticated/notices'
     | '/_authenticated/profile'
     | '/_authenticated/room'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/students'
   fileRoutesById: FileRoutesById
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRoomsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -310,6 +330,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNoticesRoute: typeof AuthenticatedNoticesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminRoomsRoute: typeof AuthenticatedAdminRoomsRoute
   AuthenticatedAdminStudentsRoute: typeof AuthenticatedAdminStudentsRoute
 }
@@ -323,6 +344,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedNoticesRoute: AuthenticatedNoticesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRoomRoute: AuthenticatedRoomRoute,
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminRoomsRoute: AuthenticatedAdminRoomsRoute,
   AuthenticatedAdminStudentsRoute: AuthenticatedAdminStudentsRoute,
 }
