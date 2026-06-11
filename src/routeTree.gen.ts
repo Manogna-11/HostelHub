@@ -9,38 +9,251 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedNoticesRouteImport } from './routes/_authenticated/notices'
+import { Route as AuthenticatedMessRouteImport } from './routes/_authenticated/mess'
+import { Route as AuthenticatedFeedbackRouteImport } from './routes/_authenticated/feedback'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedComplaintsRouteImport } from './routes/_authenticated/complaints'
+import { Route as AuthenticatedAssistantRouteImport } from './routes/_authenticated/assistant'
+import { Route as AuthenticatedAdminStudentsRouteImport } from './routes/_authenticated/admin.students'
+import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
+  id: '/room',
+  path: '/room',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNoticesRoute = AuthenticatedNoticesRouteImport.update({
+  id: '/notices',
+  path: '/notices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMessRoute = AuthenticatedMessRouteImport.update({
+  id: '/mess',
+  path: '/mess',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFeedbackRoute = AuthenticatedFeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedComplaintsRoute = AuthenticatedComplaintsRouteImport.update({
+  id: '/complaints',
+  path: '/complaints',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAssistantRoute = AuthenticatedAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminStudentsRoute =
+  AuthenticatedAdminStudentsRouteImport.update({
+    id: '/admin/students',
+    path: '/admin/students',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminRoomsRoute = AuthenticatedAdminRoomsRouteImport.update({
+  id: '/admin/rooms',
+  path: '/admin/rooms',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/admin/analytics',
+    path: '/admin/analytics',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/assistant': typeof AuthenticatedAssistantRoute
+  '/complaints': typeof AuthenticatedComplaintsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feedback': typeof AuthenticatedFeedbackRoute
+  '/mess': typeof AuthenticatedMessRoute
+  '/notices': typeof AuthenticatedNoticesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/room': typeof AuthenticatedRoomRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
+  '/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/assistant': typeof AuthenticatedAssistantRoute
+  '/complaints': typeof AuthenticatedComplaintsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/feedback': typeof AuthenticatedFeedbackRoute
+  '/mess': typeof AuthenticatedMessRoute
+  '/notices': typeof AuthenticatedNoticesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/room': typeof AuthenticatedRoomRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
+  '/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/assistant': typeof AuthenticatedAssistantRoute
+  '/_authenticated/complaints': typeof AuthenticatedComplaintsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/feedback': typeof AuthenticatedFeedbackRoute
+  '/_authenticated/mess': typeof AuthenticatedMessRoute
+  '/_authenticated/notices': typeof AuthenticatedNoticesRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
+  '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/assistant'
+    | '/complaints'
+    | '/dashboard'
+    | '/feedback'
+    | '/mess'
+    | '/notices'
+    | '/profile'
+    | '/room'
+    | '/admin/analytics'
+    | '/admin/rooms'
+    | '/admin/students'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/assistant'
+    | '/complaints'
+    | '/dashboard'
+    | '/feedback'
+    | '/mess'
+    | '/notices'
+    | '/profile'
+    | '/room'
+    | '/admin/analytics'
+    | '/admin/rooms'
+    | '/admin/students'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/sitemap.xml'
+    | '/_authenticated/assistant'
+    | '/_authenticated/complaints'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/feedback'
+    | '/_authenticated/mess'
+    | '/_authenticated/notices'
+    | '/_authenticated/profile'
+    | '/_authenticated/room'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/rooms'
+    | '/_authenticated/admin/students'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +261,124 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/room': {
+      id: '/_authenticated/room'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof AuthenticatedRoomRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notices': {
+      id: '/_authenticated/notices'
+      path: '/notices'
+      fullPath: '/notices'
+      preLoaderRoute: typeof AuthenticatedNoticesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mess': {
+      id: '/_authenticated/mess'
+      path: '/mess'
+      fullPath: '/mess'
+      preLoaderRoute: typeof AuthenticatedMessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/feedback': {
+      id: '/_authenticated/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof AuthenticatedFeedbackRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/complaints': {
+      id: '/_authenticated/complaints'
+      path: '/complaints'
+      fullPath: '/complaints'
+      preLoaderRoute: typeof AuthenticatedComplaintsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/assistant': {
+      id: '/_authenticated/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AuthenticatedAssistantRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/students': {
+      id: '/_authenticated/admin/students'
+      path: '/admin/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AuthenticatedAdminStudentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/rooms': {
+      id: '/_authenticated/admin/rooms'
+      path: '/admin/rooms'
+      fullPath: '/admin/rooms'
+      preLoaderRoute: typeof AuthenticatedAdminRoomsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAssistantRoute: typeof AuthenticatedAssistantRoute
+  AuthenticatedComplaintsRoute: typeof AuthenticatedComplaintsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFeedbackRoute: typeof AuthenticatedFeedbackRoute
+  AuthenticatedMessRoute: typeof AuthenticatedMessRoute
+  AuthenticatedNoticesRoute: typeof AuthenticatedNoticesRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRoomRoute: typeof AuthenticatedRoomRoute
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminRoomsRoute: typeof AuthenticatedAdminRoomsRoute
+  AuthenticatedAdminStudentsRoute: typeof AuthenticatedAdminStudentsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAssistantRoute: AuthenticatedAssistantRoute,
+  AuthenticatedComplaintsRoute: AuthenticatedComplaintsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFeedbackRoute: AuthenticatedFeedbackRoute,
+  AuthenticatedMessRoute: AuthenticatedMessRoute,
+  AuthenticatedNoticesRoute: AuthenticatedNoticesRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedRoomRoute: AuthenticatedRoomRoute,
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminRoomsRoute: AuthenticatedAdminRoomsRoute,
+  AuthenticatedAdminStudentsRoute: AuthenticatedAdminStudentsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

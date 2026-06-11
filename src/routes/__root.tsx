@@ -9,8 +9,12 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { Toaster } from "sonner";
+
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { ThemeProvider } from "../hooks/use-theme";
+import { AuthProvider } from "../hooks/use-auth";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +81,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "HostelHub AI — Intelligent Hostel Management" },
+      { name: "description", content: "AI-powered hostel management for students and admins: complaints, rooms, notices, mess, feedback, and a smart assistant." },
+      { name: "author", content: "HostelHub AI" },
+      { property: "og:title", content: "HostelHub AI — Intelligent Hostel Management" },
+      { property: "og:description", content: "AI-powered hostel management for students and admins." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -118,8 +121,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <AuthProvider>
+          <Outlet />
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
