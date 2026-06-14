@@ -25,7 +25,7 @@ export const claimAdminIfNone = createServerFn({ method: "POST" })
     return { promoted: true, reason: "bootstrapped" };
   });
 
-const DEPARTMENTS = ["Computer Science", "Mechanical", "Electrical", "Civil", "Electronics"];
+
 const COMPLAINT_SAMPLES = [
   { title: "Fan not working in room", description: "The ceiling fan stopped rotating and makes a buzzing noise.", category: "electrical", priority: "high", status: "open" },
   { title: "Leaking tap in washroom", description: "Water keeps dripping from the bathroom tap all day.", category: "plumbing", priority: "medium", status: "in_progress" },
