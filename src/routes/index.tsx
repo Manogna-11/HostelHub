@@ -7,7 +7,7 @@ import {
   BarChart3,
   MessageSquare,
   ShieldCheck,
-  ArrowRight,
+  GraduationCap,
   Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
