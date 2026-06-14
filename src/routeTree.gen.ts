@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentLoginRouteImport } from './routes/student.login'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNoticesRouteImport } from './routes/_authenticated/notices'
@@ -48,6 +49,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentLoginRoute = StudentLoginRouteImport.update({
+  id: '/student/login',
+  path: '/student/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/student/login': typeof StudentLoginRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/student/login': typeof StudentLoginRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_authenticated/notices': typeof AuthenticatedNoticesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/student/login': typeof StudentLoginRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/student/login'
     | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/student/login'
     | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/_authenticated/notices'
     | '/_authenticated/profile'
     | '/_authenticated/room'
+    | '/student/login'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/students'
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudentLoginRoute: typeof StudentLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/login': {
+      id: '/student/login'
+      path: '/student/login'
+      fullPath: '/student/login'
+      preLoaderRoute: typeof StudentLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/room': {
@@ -378,6 +398,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudentLoginRoute: StudentLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
