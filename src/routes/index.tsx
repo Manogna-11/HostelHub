@@ -59,17 +59,32 @@ function Landing() {
           HostelHub AI streamlines complaints, rooms, notices, mess and feedback for students and administrators — with
           smart AI working behind every feature.
         </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button asChild size="lg" className="gap-2">
-            <Link to="/auth">
-              Get started <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link to="/auth">Admin login</Link>
-          </Button>
+        <div className="mx-auto mt-10 grid max-w-3xl gap-5 sm:grid-cols-2">
+          <div className="stat-card flex flex-col p-6 text-left">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <GraduationCap className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-lg font-bold">Students</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">Complaints, room, mess, notices & AI assistant.</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Button asChild><Link to="/student/login">Student Login</Link></Button>
+              <Button asChild variant="outline"><Link to="/student/register">Student Registration</Link></Button>
+            </div>
+          </div>
+          <div className="stat-card flex flex-col p-6 text-left">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-foreground/10 text-foreground">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <h3 className="mt-4 text-lg font-bold">Administrators</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">Manage students, rooms, complaints & analytics.</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Button asChild><Link to="/admin/login">Administrator Login</Link></Button>
+              <Button asChild variant="outline"><Link to="/admin/register">Administrator Registration</Link></Button>
+            </div>
+          </div>
         </div>
       </section>
+
 
       <section className="mx-auto max-w-6xl px-6 pb-24">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
