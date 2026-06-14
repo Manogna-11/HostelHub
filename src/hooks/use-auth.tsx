@@ -5,13 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 export type Profile = {
   id: string;
   student_id: string | null;
+  admin_id: string | null;
   name: string;
   email: string | null;
   phone: string | null;
   gender: string | null;
-  department: string | null;
-  year: string | null;
   room_number: string | null;
+  designation: string | null;
 };
 
 type AuthState = {

@@ -31,9 +31,11 @@ function Students() {
     queryFn: async () => (await supabase.from("profiles").select("*").order("created_at", { ascending: false })).data ?? [],
   });
 
-  const filtered = (data ?? []).filter(
-    (s) => s.name.toLowerCase().includes(search.toLowerCase()) || (s.student_id ?? "").toLowerCase().includes(search.toLowerCase()),
-  );
+  const filtered = (data ?? [])
+    .filter((s) => !s.admin_id)
+    .filter(
+      (s) => s.name.toLowerCase().includes(search.toLowerCase()) || (s.student_id ?? "").toLowerCase().includes(search.toLowerCase()),
+    );
 
   const saveRoom = async () => {
     if (!assign) return;
@@ -59,8 +61,7 @@ function Students() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Student ID</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Year</TableHead>
+                <TableHead>Gender</TableHead>
                 <TableHead>Room</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead></TableHead>
@@ -68,7 +69,7 @@ function Students() {
             </TableHeader>
             <TableBody>
               {filtered.length === 0 && (
-                <TableRow><TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
                   <Users className="mx-auto mb-2 h-8 w-8 opacity-40" /> No students found.
                 </TableCell></TableRow>
               )}
@@ -76,8 +77,7 @@ function Students() {
                 <TableRow key={s.id}>
                   <TableCell className="font-medium">{s.name || "—"}</TableCell>
                   <TableCell>{s.student_id || "—"}</TableCell>
-                  <TableCell>{s.department || "—"}</TableCell>
-                  <TableCell>{s.year || "—"}</TableCell>
+                  <TableCell>{s.gender || "—"}</TableCell>
                   <TableCell>{s.room_number || <span className="text-muted-foreground">Unassigned</span>}</TableCell>
                   <TableCell>{s.phone || "—"}</TableCell>
                   <TableCell>

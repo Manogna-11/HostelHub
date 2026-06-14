@@ -175,8 +175,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin_id: string | null
           created_at: string
-          department: string | null
+          designation: string | null
           email: string | null
           gender: string | null
           id: string
@@ -185,11 +186,11 @@ export type Database = {
           room_number: string | null
           student_id: string | null
           updated_at: string
-          year: string | null
         }
         Insert: {
+          admin_id?: string | null
           created_at?: string
-          department?: string | null
+          designation?: string | null
           email?: string | null
           gender?: string | null
           id: string
@@ -198,11 +199,11 @@ export type Database = {
           room_number?: string | null
           student_id?: string | null
           updated_at?: string
-          year?: string | null
         }
         Update: {
+          admin_id?: string | null
           created_at?: string
-          department?: string | null
+          designation?: string | null
           email?: string | null
           gender?: string | null
           id?: string
@@ -211,7 +212,6 @@ export type Database = {
           room_number?: string | null
           student_id?: string | null
           updated_at?: string
-          year?: string | null
         }
         Relationships: []
       }

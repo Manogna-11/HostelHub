@@ -25,7 +25,7 @@ export const claimAdminIfNone = createServerFn({ method: "POST" })
     return { promoted: true, reason: "bootstrapped" };
   });
 
-const DEPARTMENTS = ["Computer Science", "Mechanical", "Electrical", "Civil", "Electronics"];
+
 const COMPLAINT_SAMPLES = [
   { title: "Fan not working in room", description: "The ceiling fan stopped rotating and makes a buzzing noise.", category: "electrical", priority: "high", status: "open" },
   { title: "Leaking tap in washroom", description: "Water keeps dripping from the bathroom tap all day.", category: "plumbing", priority: "medium", status: "in_progress" },
@@ -69,8 +69,7 @@ export const seedDemoData = createServerFn({ method: "POST" })
           student_id: `STU20${i + 1}0${i + 3}`,
           phone: `98765${10000 + i}`,
           gender: i % 2 === 0 ? "Male" : "Female",
-          department: DEPARTMENTS[i % DEPARTMENTS.length],
-          year: `${(i % 4) + 1}`,
+          room_number: rooms[i],
         },
       });
       if (error || !created.user) continue;

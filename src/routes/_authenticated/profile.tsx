@@ -18,17 +18,20 @@ function ProfilePage() {
   const [form, setForm] = useState({
     name: profile?.name ?? "",
     student_id: profile?.student_id ?? "",
+    admin_id: profile?.admin_id ?? "",
     phone: profile?.phone ?? "",
     gender: profile?.gender ?? "",
-    department: profile?.department ?? "",
-    year: profile?.year ?? "",
+    designation: profile?.designation ?? "",
     room_number: profile?.room_number ?? "",
   });
   const [saving, setSaving] = useState(false);
 
   const save = async () => {
     setSaving(true);
-    const { error } = await supabase.from("profiles").update(form).eq("id", user!.id);
+    const payload = isAdmin
+      ? { name: form.name, admin_id: form.admin_id, phone: form.phone, designation: form.designation }
+      : { name: form.name, student_id: form.student_id, phone: form.phone, gender: form.gender, room_number: form.room_number };
+    const { error } = await supabase.from("profiles").update(payload).eq("id", user!.id);
     setSaving(false);
     if (error) return toast.error("Update failed.");
     toast.success("Profile updated.");
@@ -54,12 +57,20 @@ function ProfilePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <F label="Full Name" className="col-span-2"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></F>
-          <F label="Student ID"><Input value={form.student_id} onChange={(e) => setForm({ ...form, student_id: e.target.value })} /></F>
-          <F label="Phone"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></F>
-          <F label="Gender"><Input value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })} /></F>
-          <F label="Year"><Input value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} /></F>
-          <F label="Department"><Input value={form.department} onChange={(e) => setForm({ ...form, department: e.target.value })} /></F>
-          <F label="Room Number"><Input value={form.room_number} onChange={(e) => setForm({ ...form, room_number: e.target.value })} /></F>
+          {isAdmin ? (
+            <>
+              <F label="Admin ID"><Input value={form.admin_id} onChange={(e) => setForm({ ...form, admin_id: e.target.value })} /></F>
+              <F label="Designation"><Input value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} /></F>
+              <F label="Phone"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></F>
+            </>
+          ) : (
+            <>
+              <F label="Student ID"><Input value={form.student_id} onChange={(e) => setForm({ ...form, student_id: e.target.value })} /></F>
+              <F label="Phone"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></F>
+              <F label="Gender"><Input value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })} /></F>
+              <F label="Room Number"><Input value={form.room_number} onChange={(e) => setForm({ ...form, room_number: e.target.value })} /></F>
+            </>
+          )}
         </div>
         <Button className="mt-6" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save changes"}</Button>
       </div>

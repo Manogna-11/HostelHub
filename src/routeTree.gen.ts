@@ -14,6 +14,10 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentRegisterRouteImport } from './routes/student.register'
+import { Route as StudentLoginRouteImport } from './routes/student.login'
+import { Route as AdminRegisterRouteImport } from './routes/admin.register'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNoticesRouteImport } from './routes/_authenticated/notices'
@@ -48,6 +52,26 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentRegisterRoute = StudentRegisterRouteImport.update({
+  id: '/student/register',
+  path: '/student/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentLoginRoute = StudentLoginRouteImport.update({
+  id: '/student/login',
+  path: '/student/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRegisterRoute = AdminRegisterRouteImport.update({
+  id: '/admin/register',
+  path: '/admin/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
@@ -121,6 +145,10 @@ export interface FileRoutesByFullPath {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -138,6 +166,10 @@ export interface FileRoutesByTo {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -157,6 +189,10 @@ export interface FileRoutesById {
   '/_authenticated/notices': typeof AuthenticatedNoticesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
@@ -176,6 +212,10 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/login'
+    | '/admin/register'
+    | '/student/login'
+    | '/student/register'
     | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
@@ -193,6 +233,10 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/login'
+    | '/admin/register'
+    | '/student/login'
+    | '/student/register'
     | '/admin/analytics'
     | '/admin/rooms'
     | '/admin/students'
@@ -211,6 +255,10 @@ export interface FileRouteTypes {
     | '/_authenticated/notices'
     | '/_authenticated/profile'
     | '/_authenticated/room'
+    | '/admin/login'
+    | '/admin/register'
+    | '/student/login'
+    | '/student/register'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/students'
@@ -222,6 +270,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminRegisterRoute: typeof AdminRegisterRoute
+  StudentLoginRoute: typeof StudentLoginRoute
+  StudentRegisterRoute: typeof StudentRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -259,6 +311,34 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/register': {
+      id: '/student/register'
+      path: '/student/register'
+      fullPath: '/student/register'
+      preLoaderRoute: typeof StudentRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/login': {
+      id: '/student/login'
+      path: '/student/login'
+      fullPath: '/student/login'
+      preLoaderRoute: typeof StudentLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/register': {
+      id: '/admin/register'
+      path: '/admin/register'
+      fullPath: '/admin/register'
+      preLoaderRoute: typeof AdminRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/room': {
@@ -378,6 +458,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminRegisterRoute: AdminRegisterRoute,
+  StudentLoginRoute: StudentLoginRoute,
+  StudentRegisterRoute: StudentRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
