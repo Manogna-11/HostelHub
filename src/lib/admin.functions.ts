@@ -69,8 +69,7 @@ export const seedDemoData = createServerFn({ method: "POST" })
           student_id: `STU20${i + 1}0${i + 3}`,
           phone: `98765${10000 + i}`,
           gender: i % 2 === 0 ? "Male" : "Female",
-          department: DEPARTMENTS[i % DEPARTMENTS.length],
-          year: `${(i % 4) + 1}`,
+          room_number: rooms[i],
         },
       });
       if (error || !created.user) continue;
