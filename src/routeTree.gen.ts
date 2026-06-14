@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentRegisterRouteImport } from './routes/student.register'
 import { Route as StudentLoginRouteImport } from './routes/student.login'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRoomRouteImport } from './routes/_authenticated/room'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNoticesRouteImport } from './routes/_authenticated/notices'
@@ -60,6 +61,11 @@ const StudentRegisterRoute = StudentRegisterRouteImport.update({
 const StudentLoginRoute = StudentLoginRouteImport.update({
   id: '/student/login',
   path: '/student/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoomRoute = AuthenticatedRoomRouteImport.update({
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
   '/student/login': typeof StudentLoginRoute
   '/student/register': typeof StudentRegisterRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/notices': typeof AuthenticatedNoticesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
   '/student/login': typeof StudentLoginRoute
   '/student/register': typeof StudentRegisterRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/_authenticated/notices': typeof AuthenticatedNoticesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/room': typeof AuthenticatedRoomRoute
+  '/admin/login': typeof AdminLoginRoute
   '/student/login': typeof StudentLoginRoute
   '/student/register': typeof StudentRegisterRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/login'
     | '/student/login'
     | '/student/register'
     | '/admin/analytics'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/notices'
     | '/profile'
     | '/room'
+    | '/admin/login'
     | '/student/login'
     | '/student/register'
     | '/admin/analytics'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/_authenticated/notices'
     | '/_authenticated/profile'
     | '/_authenticated/room'
+    | '/admin/login'
     | '/student/login'
     | '/student/register'
     | '/_authenticated/admin/analytics'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   StudentLoginRoute: typeof StudentLoginRoute
   StudentRegisterRoute: typeof StudentRegisterRoute
 }
@@ -299,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/student/login'
       fullPath: '/student/login'
       preLoaderRoute: typeof StudentLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/room': {
@@ -418,6 +438,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminLoginRoute: AdminLoginRoute,
   StudentLoginRoute: StudentLoginRoute,
   StudentRegisterRoute: StudentRegisterRoute,
 }
