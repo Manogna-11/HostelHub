@@ -31,9 +31,11 @@ function Students() {
     queryFn: async () => (await supabase.from("profiles").select("*").order("created_at", { ascending: false })).data ?? [],
   });
 
-  const filtered = (data ?? []).filter(
-    (s) => s.name.toLowerCase().includes(search.toLowerCase()) || (s.student_id ?? "").toLowerCase().includes(search.toLowerCase()),
-  );
+  const filtered = (data ?? [])
+    .filter((s) => !s.admin_id)
+    .filter(
+      (s) => s.name.toLowerCase().includes(search.toLowerCase()) || (s.student_id ?? "").toLowerCase().includes(search.toLowerCase()),
+    );
 
   const saveRoom = async () => {
     if (!assign) return;
