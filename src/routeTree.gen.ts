@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HostelIdRouteImport } from './routes/hostel.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedInquiriesRouteImport } from './routes/_authenticated/inquiries'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
@@ -59,6 +60,11 @@ const HostelIdRoute = HostelIdRouteImport.update({
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedInquiriesRoute = AuthenticatedInquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/inquiries': typeof AuthenticatedInquiriesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/inquiries': typeof AuthenticatedInquiriesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/inquiries': typeof AuthenticatedInquiriesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/_authenticated/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/inquiries'
     | '/profile'
     | '/hostel/$id'
     | '/admin/complaints'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/inquiries'
     | '/profile'
     | '/hostel/$id'
     | '/admin/complaints'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
+    | '/_authenticated/inquiries'
     | '/_authenticated/profile'
     | '/hostel/$id'
     | '/_authenticated/admin/complaints'
@@ -291,6 +303,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/inquiries': {
+      id: '/_authenticated/inquiries'
+      path: '/inquiries'
+      fullPath: '/inquiries'
+      preLoaderRoute: typeof AuthenticatedInquiriesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -368,6 +387,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInquiriesRoute: typeof AuthenticatedInquiriesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminComplaintsRoute: typeof AuthenticatedAdminComplaintsRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
@@ -382,6 +402,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInquiriesRoute: AuthenticatedInquiriesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminComplaintsRoute: AuthenticatedAdminComplaintsRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
