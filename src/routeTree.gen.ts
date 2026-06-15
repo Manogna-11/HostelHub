@@ -20,6 +20,7 @@ import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
 import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
 import { Route as AuthenticatedAdminResidentsRouteImport } from './routes/_authenticated/admin.residents'
+import { Route as AuthenticatedAdminInsightsRouteImport } from './routes/_authenticated/admin.insights'
 import { Route as AuthenticatedAdminInquiriesRouteImport } from './routes/_authenticated/admin.inquiries'
 import { Route as AuthenticatedAdminHostelRouteImport } from './routes/_authenticated/admin.hostel'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
@@ -81,6 +82,12 @@ const AuthenticatedAdminResidentsRoute =
     path: '/admin/residents',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminInsightsRoute =
+  AuthenticatedAdminInsightsRouteImport.update({
+    id: '/admin/insights',
+    path: '/admin/insights',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminInquiriesRoute =
   AuthenticatedAdminInquiriesRouteImport.update({
     id: '/admin/inquiries',
@@ -117,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/admin/insights': typeof AuthenticatedAdminInsightsRoute
   '/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
@@ -133,6 +141,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/admin/insights': typeof AuthenticatedAdminInsightsRoute
   '/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
@@ -151,6 +160,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/_authenticated/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/_authenticated/admin/insights': typeof AuthenticatedAdminInsightsRoute
   '/_authenticated/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/hostel'
     | '/admin/inquiries'
+    | '/admin/insights'
     | '/admin/residents'
     | '/admin/reviews'
     | '/admin/rooms'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/hostel'
     | '/admin/inquiries'
+    | '/admin/insights'
     | '/admin/residents'
     | '/admin/reviews'
     | '/admin/rooms'
@@ -202,6 +214,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/hostel'
     | '/_authenticated/admin/inquiries'
+    | '/_authenticated/admin/insights'
     | '/_authenticated/admin/residents'
     | '/_authenticated/admin/reviews'
     | '/_authenticated/admin/rooms'
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminResidentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/insights': {
+      id: '/_authenticated/admin/insights'
+      path: '/admin/insights'
+      fullPath: '/admin/insights'
+      preLoaderRoute: typeof AuthenticatedAdminInsightsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/inquiries': {
       id: '/_authenticated/admin/inquiries'
       path: '/admin/inquiries'
@@ -333,6 +353,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminHostelRoute: typeof AuthenticatedAdminHostelRoute
   AuthenticatedAdminInquiriesRoute: typeof AuthenticatedAdminInquiriesRoute
+  AuthenticatedAdminInsightsRoute: typeof AuthenticatedAdminInsightsRoute
   AuthenticatedAdminResidentsRoute: typeof AuthenticatedAdminResidentsRoute
   AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
   AuthenticatedAdminRoomsRoute: typeof AuthenticatedAdminRoomsRoute
@@ -345,6 +366,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminHostelRoute: AuthenticatedAdminHostelRoute,
   AuthenticatedAdminInquiriesRoute: AuthenticatedAdminInquiriesRoute,
+  AuthenticatedAdminInsightsRoute: AuthenticatedAdminInsightsRoute,
   AuthenticatedAdminResidentsRoute: AuthenticatedAdminResidentsRoute,
   AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
   AuthenticatedAdminRoomsRoute: AuthenticatedAdminRoomsRoute,
