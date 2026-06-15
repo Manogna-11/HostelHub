@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HostelIdRouteImport } from './routes/hostel.$id'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
@@ -54,6 +55,11 @@ const HostelIdRoute = HostelIdRouteImport.update({
   id: '/hostel/$id',
   path: '/hostel/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/hostel/$id': typeof HostelIdRoute
   '/_authenticated/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/profile'
     | '/hostel/$id'
     | '/admin/complaints'
     | '/admin/dashboard'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/profile'
     | '/hostel/$id'
     | '/admin/complaints'
     | '/admin/dashboard'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
+    | '/_authenticated/profile'
     | '/hostel/$id'
     | '/_authenticated/admin/complaints'
     | '/_authenticated/admin/dashboard'
@@ -273,6 +285,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/hostel/$id'
       preLoaderRoute: typeof HostelIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -349,6 +368,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminComplaintsRoute: typeof AuthenticatedAdminComplaintsRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminHostelRoute: typeof AuthenticatedAdminHostelRoute
@@ -362,6 +382,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminComplaintsRoute: AuthenticatedAdminComplaintsRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminHostelRoute: AuthenticatedAdminHostelRoute,
