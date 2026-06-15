@@ -14,242 +14,392 @@ export type Database = {
   }
   public: {
     Tables: {
-      chat_history: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          role: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          role: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          role?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       complaints: {
         Row: {
           ai_summary: string | null
-          category: Database["public"]["Enums"]["complaint_category"]
+          category: string | null
           created_at: string
-          description: string
+          description: string | null
+          hostel_id: string
           id: string
-          priority: Database["public"]["Enums"]["complaint_priority"]
-          room_number: string | null
-          status: Database["public"]["Enums"]["complaint_status"]
+          priority: string | null
+          resident_name: string | null
+          status: string
           title: string
           updated_at: string
-          user_id: string
         }
         Insert: {
           ai_summary?: string | null
-          category?: Database["public"]["Enums"]["complaint_category"]
+          category?: string | null
           created_at?: string
-          description: string
+          description?: string | null
+          hostel_id: string
           id?: string
-          priority?: Database["public"]["Enums"]["complaint_priority"]
-          room_number?: string | null
-          status?: Database["public"]["Enums"]["complaint_status"]
+          priority?: string | null
+          resident_name?: string | null
+          status?: string
           title: string
           updated_at?: string
-          user_id: string
         }
         Update: {
           ai_summary?: string | null
-          category?: Database["public"]["Enums"]["complaint_category"]
+          category?: string | null
           created_at?: string
-          description?: string
+          description?: string | null
+          hostel_id?: string
           id?: string
-          priority?: Database["public"]["Enums"]["complaint_priority"]
-          room_number?: string | null
-          status?: Database["public"]["Enums"]["complaint_status"]
+          priority?: string | null
+          resident_name?: string | null
+          status?: string
           title?: string
           updated_at?: string
-          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "complaints_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      feedback: {
+      hostel_images: {
         Row: {
-          ai_summary: string | null
+          category: string | null
           created_at: string
-          feedback_text: string
+          hostel_id: string
           id: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          hostel_id: string
+          id?: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          hostel_id?: string
+          id?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hostel_images_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hostels: {
+        Row: {
+          address: string | null
+          city: string | null
+          college_name: string | null
+          created_at: string
+          description: string | null
+          distance_from_college: string | null
+          double_fee: number | null
+          email: string | null
+          facilities: Json
+          hostel_type: Database["public"]["Enums"]["hostel_type"]
+          id: string
+          is_published: boolean
+          latitude: number | null
+          longitude: number | null
+          maps_link: string | null
+          mess_menu: Json
+          mess_timings: string | null
+          mess_veg_nonveg: string | null
+          name: string
+          owner_id: string
+          phone: string | null
+          pincode: string | null
           rating: number
-          sentiment: Database["public"]["Enums"]["sentiment"] | null
-          sentiment_score: number | null
-          user_id: string
-        }
-        Insert: {
-          ai_summary?: string | null
-          created_at?: string
-          feedback_text: string
-          id?: string
-          rating?: number
-          sentiment?: Database["public"]["Enums"]["sentiment"] | null
-          sentiment_score?: number | null
-          user_id: string
-        }
-        Update: {
-          ai_summary?: string | null
-          created_at?: string
-          feedback_text?: string
-          id?: string
-          rating?: number
-          sentiment?: Database["public"]["Enums"]["sentiment"] | null
-          sentiment_score?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      mess_menu: {
-        Row: {
-          breakfast: string | null
-          day_of_week: string
-          dinner: string | null
-          id: string
-          lunch: string | null
-          snacks: string | null
+          review_count: number
+          rules: string | null
+          security_deposit: number | null
+          security_info: Json
+          single_fee: number | null
+          state: string | null
+          triple_fee: number | null
           updated_at: string
         }
         Insert: {
-          breakfast?: string | null
-          day_of_week: string
-          dinner?: string | null
+          address?: string | null
+          city?: string | null
+          college_name?: string | null
+          created_at?: string
+          description?: string | null
+          distance_from_college?: string | null
+          double_fee?: number | null
+          email?: string | null
+          facilities?: Json
+          hostel_type?: Database["public"]["Enums"]["hostel_type"]
           id?: string
-          lunch?: string | null
-          snacks?: string | null
+          is_published?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          maps_link?: string | null
+          mess_menu?: Json
+          mess_timings?: string | null
+          mess_veg_nonveg?: string | null
+          name: string
+          owner_id: string
+          phone?: string | null
+          pincode?: string | null
+          rating?: number
+          review_count?: number
+          rules?: string | null
+          security_deposit?: number | null
+          security_info?: Json
+          single_fee?: number | null
+          state?: string | null
+          triple_fee?: number | null
           updated_at?: string
         }
         Update: {
-          breakfast?: string | null
-          day_of_week?: string
-          dinner?: string | null
+          address?: string | null
+          city?: string | null
+          college_name?: string | null
+          created_at?: string
+          description?: string | null
+          distance_from_college?: string | null
+          double_fee?: number | null
+          email?: string | null
+          facilities?: Json
+          hostel_type?: Database["public"]["Enums"]["hostel_type"]
           id?: string
-          lunch?: string | null
-          snacks?: string | null
+          is_published?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          maps_link?: string | null
+          mess_menu?: Json
+          mess_timings?: string | null
+          mess_veg_nonveg?: string | null
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          pincode?: string | null
+          rating?: number
+          review_count?: number
+          rules?: string | null
+          security_deposit?: number | null
+          security_info?: Json
+          single_fee?: number | null
+          state?: string | null
+          triple_fee?: number | null
           updated_at?: string
         }
         Relationships: []
       }
-      notices: {
+      inquiries: {
         Row: {
-          ai_summary: string | null
           created_at: string
-          description: string
+          email: string | null
+          hostel_id: string
           id: string
-          priority: Database["public"]["Enums"]["notice_priority"]
-          title: string
-          updated_at: string
+          message: string | null
+          name: string
+          phone: string | null
+          status: string
+          user_id: string | null
         }
         Insert: {
-          ai_summary?: string | null
           created_at?: string
-          description: string
+          email?: string | null
+          hostel_id: string
           id?: string
-          priority?: Database["public"]["Enums"]["notice_priority"]
-          title: string
-          updated_at?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          status?: string
+          user_id?: string | null
         }
         Update: {
-          ai_summary?: string | null
           created_at?: string
-          description?: string
+          email?: string | null
+          hostel_id?: string
           id?: string
-          priority?: Database["public"]["Enums"]["notice_priority"]
-          title?: string
-          updated_at?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          status?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
-          admin_id: string | null
           created_at: string
-          designation: string | null
           email: string | null
-          gender: string | null
           id: string
           name: string
           phone: string | null
-          room_number: string | null
-          student_id: string | null
           updated_at: string
         }
         Insert: {
-          admin_id?: string | null
           created_at?: string
-          designation?: string | null
           email?: string | null
-          gender?: string | null
           id: string
           name?: string
           phone?: string | null
-          room_number?: string | null
-          student_id?: string | null
           updated_at?: string
         }
         Update: {
-          admin_id?: string | null
           created_at?: string
-          designation?: string | null
           email?: string | null
-          gender?: string | null
           id?: string
           name?: string
           phone?: string | null
-          room_number?: string | null
-          student_id?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      residents: {
+        Row: {
+          created_at: string
+          fee_status: string
+          hostel_id: string
+          id: string
+          joining_date: string | null
+          name: string
+          phone: string | null
+          room_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fee_status?: string
+          hostel_id: string
+          id?: string
+          joining_date?: string | null
+          name: string
+          phone?: string | null
+          room_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fee_status?: string
+          hostel_id?: string
+          id?: string
+          joining_date?: string | null
+          name?: string
+          phone?: string | null
+          room_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "residents_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          author_name: string | null
+          comment: string | null
+          created_at: string
+          hostel_id: string
+          id: string
+          images: Json
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          author_name?: string | null
+          comment?: string | null
+          created_at?: string
+          hostel_id: string
+          id?: string
+          images?: Json
+          rating: number
+          user_id: string
+        }
+        Update: {
+          author_name?: string | null
+          comment?: string | null
+          created_at?: string
+          hostel_id?: string
+          id?: string
+          images?: Json
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rooms: {
         Row: {
           capacity: number
           created_at: string
-          floor: number
+          hostel_id: string
           id: string
-          occupied_count: number
+          monthly_fee: number | null
+          occupied_beds: number
           room_number: string
-          room_type: string
-          status: Database["public"]["Enums"]["room_status"]
+          room_type: string | null
           updated_at: string
         }
         Insert: {
           capacity?: number
           created_at?: string
-          floor?: number
+          hostel_id: string
           id?: string
-          occupied_count?: number
+          monthly_fee?: number | null
+          occupied_beds?: number
           room_number: string
-          room_type?: string
-          status?: Database["public"]["Enums"]["room_status"]
+          room_type?: string | null
           updated_at?: string
         }
         Update: {
           capacity?: number
           created_at?: string
-          floor?: number
+          hostel_id?: string
           id?: string
-          occupied_count?: number
+          monthly_fee?: number | null
+          occupied_beds?: number
           room_number?: string
-          room_type?: string
-          status?: Database["public"]["Enums"]["room_status"]
+          room_type?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "rooms_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -295,6 +445,7 @@ export type Database = {
         | "other"
       complaint_priority: "low" | "medium" | "high"
       complaint_status: "open" | "in_progress" | "resolved"
+      hostel_type: "boys" | "girls" | "coliving"
       notice_priority: "low" | "medium" | "high"
       room_status: "available" | "occupied" | "full" | "maintenance"
       sentiment: "positive" | "neutral" | "negative"
@@ -437,6 +588,7 @@ export const Constants = {
       ],
       complaint_priority: ["low", "medium", "high"],
       complaint_status: ["open", "in_progress", "resolved"],
+      hostel_type: ["boys", "girls", "coliving"],
       notice_priority: ["low", "medium", "high"],
       room_status: ["available", "occupied", "full", "maintenance"],
       sentiment: ["positive", "neutral", "negative"],
