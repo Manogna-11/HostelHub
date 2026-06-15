@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HostelIdRouteImport } from './routes/hostel.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
+import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
 import { Route as AuthenticatedAdminHostelRouteImport } from './routes/_authenticated/admin.hostel'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 
@@ -59,6 +60,11 @@ const AuthenticatedAdminSetupRoute = AuthenticatedAdminSetupRouteImport.update({
   path: '/admin/setup',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoomsRoute = AuthenticatedAdminRoomsRouteImport.update({
+  id: '/admin/rooms',
+  path: '/admin/rooms',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminHostelRoute =
   AuthenticatedAdminHostelRouteImport.update({
     id: '/admin/hostel',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/hostel/$id': typeof HostelIdRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
 export interface FileRoutesByTo {
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/hostel/$id': typeof HostelIdRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
 export interface FileRoutesById {
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/hostel/$id': typeof HostelIdRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
 export interface FileRouteTypes {
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/admin/dashboard'
     | '/admin/hostel'
+    | '/admin/rooms'
     | '/admin/setup'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/admin/dashboard'
     | '/admin/hostel'
+    | '/admin/rooms'
     | '/admin/setup'
   id:
     | '__root__'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/hostel'
+    | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/setup'
   fileRoutesById: FileRoutesById
 }
@@ -211,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSetupRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/rooms': {
+      id: '/_authenticated/admin/rooms'
+      path: '/admin/rooms'
+      fullPath: '/admin/rooms'
+      preLoaderRoute: typeof AuthenticatedAdminRoomsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/hostel': {
       id: '/_authenticated/admin/hostel'
       path: '/admin/hostel'
@@ -232,6 +251,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminHostelRoute: typeof AuthenticatedAdminHostelRoute
+  AuthenticatedAdminRoomsRoute: typeof AuthenticatedAdminRoomsRoute
   AuthenticatedAdminSetupRoute: typeof AuthenticatedAdminSetupRoute
 }
 
@@ -239,6 +259,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminHostelRoute: AuthenticatedAdminHostelRoute,
+  AuthenticatedAdminRoomsRoute: AuthenticatedAdminRoomsRoute,
   AuthenticatedAdminSetupRoute: AuthenticatedAdminSetupRoute,
 }
 
