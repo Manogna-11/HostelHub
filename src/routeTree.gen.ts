@@ -18,6 +18,7 @@ import { Route as HostelIdRouteImport } from './routes/hostel.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
 import { Route as AuthenticatedAdminHostelRouteImport } from './routes/_authenticated/admin.hostel'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -64,6 +65,12 @@ const AuthenticatedAdminHostelRoute =
     path: '/admin/hostel',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/admin/dashboard',
+    path: '/admin/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -94,6 +103,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/hostel': typeof AuthenticatedAdminHostelRoute
   '/_authenticated/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/hostel/$id'
+    | '/admin/dashboard'
     | '/admin/hostel'
     | '/admin/setup'
   fileRoutesByTo: FileRoutesByTo
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/hostel/$id'
+    | '/admin/dashboard'
     | '/admin/hostel'
     | '/admin/setup'
   id:
@@ -127,6 +139,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
     | '/hostel/$id'
+    | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/hostel'
     | '/_authenticated/admin/setup'
   fileRoutesById: FileRoutesById
@@ -205,17 +218,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHostelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/dashboard': {
+      id: '/_authenticated/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminHostelRoute: typeof AuthenticatedAdminHostelRoute
   AuthenticatedAdminSetupRoute: typeof AuthenticatedAdminSetupRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminHostelRoute: AuthenticatedAdminHostelRoute,
   AuthenticatedAdminSetupRoute: AuthenticatedAdminSetupRoute,
 }
