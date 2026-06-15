@@ -15,6 +15,11 @@ const statusStyles: Record<string, string> = {
   positive: "bg-success/15 text-success border-success/30",
   neutral: "bg-muted text-muted-foreground border-border",
   negative: "bg-destructive/15 text-destructive border-destructive/30",
+  paid: "bg-success/15 text-success border-success/30",
+  pending: "bg-warning/15 text-warning border-warning/30",
+  new: "bg-primary/15 text-primary border-primary/30",
+  contacted: "bg-warning/15 text-warning border-warning/30",
+  converted: "bg-success/15 text-success border-success/30",
 };
 
 const labels: Record<string, string> = {
