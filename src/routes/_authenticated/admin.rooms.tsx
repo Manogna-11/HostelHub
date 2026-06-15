@@ -1,131 +1,93 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Plus, Pencil, Trash2, BedDouble } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useMyHostel } from "@/hooks/use-my-hostel";
 import { PageHeader } from "@/components/page-header";
-import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AdminGuard } from "@/components/admin-guard";
+import { formatINR } from "@/lib/hostels";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin/rooms")({
-  component: () => (
-    <AdminGuard>
-      <Rooms />
-    </AdminGuard>
-  ),
+  component: AdminRooms,
 });
 
-type RoomForm = {
-  id?: string;
-  room_number: string;
-  capacity: number;
-  occupied_count: number;
-  floor: number;
-  room_type: string;
-  status: string;
-};
-const empty: RoomForm = { room_number: "", capacity: 2, occupied_count: 0, floor: 1, room_type: "Standard", status: "available" };
-const STATUSES = ["available", "occupied", "full", "maintenance"];
+type Room = Tables<"rooms">;
 
-function Rooms() {
-  const qc = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<RoomForm>(empty);
+function AdminRooms() {
+  const { hostel } = useMyHostel();
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [form, setForm] = useState({ room_number: "", capacity: "1", occupied_beds: "0", room_type: "Single Sharing", monthly_fee: "" });
+  const [adding, setAdding] = useState(false);
 
-  const { data: rooms } = useQuery({
-    queryKey: ["rooms-admin"],
-    queryFn: async () => (await supabase.from("rooms").select("*").order("room_number")).data ?? [],
-  });
+  const load = async () => {
+    if (!hostel) return;
+    const { data } = await supabase.from("rooms").select("*").eq("hostel_id", hostel.id).order("room_number");
+    setRooms((data as Room[]) ?? []);
+  };
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [hostel]);
 
-  const save = async () => {
-    if (!form.room_number.trim()) return toast.error("Room number is required.");
-    const payload = {
-      room_number: form.room_number,
-      capacity: form.capacity,
-      occupied_count: form.occupied_count,
-      floor: form.floor,
-      room_type: form.room_type,
-      status: form.status as never,
-    };
-    const { error } = form.id
-      ? await supabase.from("rooms").update(payload).eq("id", form.id)
-      : await supabase.from("rooms").insert(payload);
+  const add = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!hostel || !form.room_number) return;
+    setAdding(true);
+    const { error } = await supabase.from("rooms").insert({
+      hostel_id: hostel.id, room_number: form.room_number, capacity: Number(form.capacity),
+      occupied_beds: Number(form.occupied_beds), room_type: form.room_type,
+      monthly_fee: form.monthly_fee ? Number(form.monthly_fee) : null,
+    });
+    setAdding(false);
     if (error) return toast.error(error.message);
-    toast.success(form.id ? "Room updated." : "Room added.");
-    setForm(empty);
-    setOpen(false);
-    qc.invalidateQueries({ queryKey: ["rooms-admin"] });
+    toast.success("Room added");
+    setForm({ room_number: "", capacity: "1", occupied_beds: "0", room_type: "Single Sharing", monthly_fee: "" });
+    load();
   };
 
   const remove = async (id: string) => {
-    const { error } = await supabase.from("rooms").delete().eq("id", id);
-    if (error) return toast.error("Delete failed.");
-    toast.success("Room deleted.");
-    qc.invalidateQueries({ queryKey: ["rooms-admin"] });
+    await supabase.from("rooms").delete().eq("id", id);
+    load();
   };
 
   return (
     <div>
-      <PageHeader
-        title="Rooms"
-        description="Add, edit and manage hostel rooms"
-        action={
-          <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setForm(empty); }}>
-            <DialogTrigger asChild><Button><Plus className="mr-1.5 h-4 w-4" /> Add Room</Button></DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>{form.id ? "Edit room" : "Add room"}</DialogTitle></DialogHeader>
-              <div className="grid grid-cols-2 gap-3">
-                <Fld label="Room Number"><Input value={form.room_number} onChange={(e) => setForm({ ...form, room_number: e.target.value })} /></Fld>
-                <Fld label="Room Type"><Input value={form.room_type} onChange={(e) => setForm({ ...form, room_type: e.target.value })} /></Fld>
-                <Fld label="Capacity"><Input type="number" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: +e.target.value })} /></Fld>
-                <Fld label="Occupied"><Input type="number" value={form.occupied_count} onChange={(e) => setForm({ ...form, occupied_count: +e.target.value })} /></Fld>
-                <Fld label="Floor"><Input type="number" value={form.floor} onChange={(e) => setForm({ ...form, floor: +e.target.value })} /></Fld>
-                <Fld label="Status">
-                  <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
-                  </Select>
-                </Fld>
-              </div>
-              <DialogFooter><Button onClick={save}>Save</Button></DialogFooter>
-            </DialogContent>
-          </Dialog>
-        }
-      />
+      <PageHeader title="Room Management" description="Manage your room inventory and bed availability." />
+      <form onSubmit={add} className="stat-card mb-6 grid gap-3 p-5 sm:grid-cols-6">
+        <div className="space-y-1"><Label className="text-xs">Room No.</Label><Input value={form.room_number} onChange={(e) => setForm({ ...form, room_number: e.target.value })} required /></div>
+        <div className="space-y-1"><Label className="text-xs">Capacity</Label><Input type="number" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} /></div>
+        <div className="space-y-1"><Label className="text-xs">Occupied</Label><Input type="number" value={form.occupied_beds} onChange={(e) => setForm({ ...form, occupied_beds: e.target.value })} /></div>
+        <div className="space-y-1"><Label className="text-xs">Type</Label>
+          <select value={form.room_type} onChange={(e) => setForm({ ...form, room_type: e.target.value })} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm">
+            <option>Single Sharing</option><option>Double Sharing</option><option>Triple Sharing</option>
+          </select>
+        </div>
+        <div className="space-y-1"><Label className="text-xs">Fee (₹)</Label><Input type="number" value={form.monthly_fee} onChange={(e) => setForm({ ...form, monthly_fee: e.target.value })} /></div>
+        <div className="flex items-end"><Button type="submit" className="w-full gap-1" disabled={adding}><Plus className="h-4 w-4" /> Add</Button></div>
+      </form>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {rooms?.map((r) => (
-          <div key={r.id} className="stat-card p-5">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><BedDouble className="h-5 w-5" /></div>
-                <div>
-                  <div className="font-bold">Room {r.room_number}</div>
-                  <div className="text-xs text-muted-foreground">{r.room_type} · Floor {r.floor}</div>
-                </div>
-              </div>
-              <StatusBadge value={r.status} />
-            </div>
-            <div className="mt-3 text-sm text-muted-foreground">Occupancy: <strong className="text-foreground">{r.occupied_count}/{r.capacity}</strong></div>
-            <div className="mt-3 flex gap-1.5">
-              <Button variant="outline" size="sm" className="flex-1" onClick={() => { setForm({ id: r.id, room_number: r.room_number, capacity: r.capacity, occupied_count: r.occupied_count, floor: r.floor, room_type: r.room_type, status: r.status }); setOpen(true); }}>
-                <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => remove(r.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
-            </div>
-          </div>
-        ))}
+      <div className="stat-card overflow-x-auto p-0">
+        <table className="w-full text-sm">
+          <thead><tr className="border-b border-border text-left text-muted-foreground">
+            <th className="p-3">Room</th><th className="p-3">Type</th><th className="p-3">Capacity</th><th className="p-3">Occupied</th><th className="p-3">Available</th><th className="p-3">Fee</th><th className="p-3"></th>
+          </tr></thead>
+          <tbody>
+            {rooms.map((r) => (
+              <tr key={r.id} className="border-b border-border last:border-0">
+                <td className="p-3 font-medium">{r.room_number}</td>
+                <td className="p-3">{r.room_type}</td>
+                <td className="p-3">{r.capacity}</td>
+                <td className="p-3">{r.occupied_beds}</td>
+                <td className="p-3">{Math.max(0, r.capacity - r.occupied_beds)}</td>
+                <td className="p-3">{formatINR(r.monthly_fee)}</td>
+                <td className="p-3"><Button variant="ghost" size="icon" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4" /></Button></td>
+              </tr>
+            ))}
+            {rooms.length === 0 && <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No rooms yet. Add your first room above.</td></tr>}
+          </tbody>
+        </table>
       </div>
     </div>
   );
-}
-
-function Fld({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div className="space-y-1.5"><Label className="text-xs">{label}</Label>{children}</div>;
 }

@@ -3,13 +3,13 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Wrench,
-  Bell,
-  UtensilsCrossed,
-  MessageSquare,
   Bot,
   BedDouble,
   Users,
-  BarChart3,
+  Search,
+  Building2,
+  Inbox,
+  Star,
   User,
   Menu,
   Moon,
@@ -28,25 +28,20 @@ import logo from "@/assets/logo.png";
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }> };
 
 const studentNav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/room", label: "My Room", icon: BedDouble },
-  { to: "/complaints", label: "Complaints", icon: Wrench },
-  { to: "/notices", label: "Notices", icon: Bell },
-  { to: "/mess", label: "Mess Menu", icon: UtensilsCrossed },
-  { to: "/feedback", label: "Feedback", icon: MessageSquare },
-  { to: "/assistant", label: "AI Assistant", icon: Bot },
+  { to: "/browse", label: "Discover", icon: Search },
+  { to: "/inquiries", label: "My Inquiries", icon: Inbox },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
 const adminNav: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/students", label: "Students", icon: Users },
+  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/admin/hostel", label: "My Hostel", icon: Building2 },
   { to: "/admin/rooms", label: "Rooms", icon: BedDouble },
-  { to: "/complaints", label: "Complaints", icon: Wrench },
-  { to: "/notices", label: "Notices", icon: Bell },
-  { to: "/mess", label: "Mess Menu", icon: UtensilsCrossed },
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/assistant", label: "AI Assistant", icon: Bot },
+  { to: "/admin/residents", label: "Residents", icon: Users },
+  { to: "/admin/inquiries", label: "Inquiries", icon: Inbox },
+  { to: "/admin/complaints", label: "Complaints", icon: Wrench },
+  { to: "/admin/reviews", label: "Reviews", icon: Star },
+  { to: "/admin/insights", label: "AI Insights", icon: Bot },
 ];
 
 function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => void }) {
@@ -79,10 +74,10 @@ function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => 
 function Brand() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5">
-      <img src={logo} alt="HostelHub AI logo" width={36} height={36} className="h-9 w-9" />
+      <img src={logo} alt="HostelHub logo" width={36} height={36} className="h-9 w-9" />
       <div className="leading-tight">
         <div className="font-bold tracking-tight">HostelHub</div>
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">AI Powered</div>
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">Find your stay</div>
       </div>
     </div>
   );
@@ -104,12 +99,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate({ to: "/auth" });
+    navigate({ to: "/" });
   };
 
   return (
     <div className="flex min-h-screen w-full bg-background">
-      {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
         <Brand />
         <div className="flex-1 overflow-y-auto pb-4">
@@ -117,13 +111,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
         {isAdmin && (
           <div className="mx-3 mb-3 flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
-            <Shield className="h-4 w-4" /> Administrator
+            <Shield className="h-4 w-4" /> Hostel Administrator
           </div>
         )}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Topbar */}
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 backdrop-blur lg:px-8">
           <div className="flex items-center gap-2">
             <Sheet open={open} onOpenChange={setOpen}>
