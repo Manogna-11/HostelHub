@@ -67,7 +67,7 @@ function AdminDashboard() {
   const runSeed = async () => {
     setSeeding(true);
     try {
-      const res = await seedDemoData({ data: {} } as never);
+      const res = await seedDemoData();
       toast.success(res.message ?? "Demo data added");
     } catch {
       toast.error("Could not seed demo data.");
