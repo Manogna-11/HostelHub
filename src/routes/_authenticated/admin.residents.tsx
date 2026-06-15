@@ -90,7 +90,7 @@ function AdminResidents() {
                 <td className="p-3">{r.phone}</td>
                 <td className="p-3">{r.room_number}</td>
                 <td className="p-3">{r.joining_date ?? "—"}</td>
-                <td className="p-3"><button onClick={() => toggleFee(r)}><StatusBadge value={r.fee_status === "paid" ? "resolved" : "open"} className="capitalize">{r.fee_status}</StatusBadge></button></td>
+                <td className="p-3"><button onClick={() => toggleFee(r)}><StatusBadge value={r.fee_status === "paid" ? "Paid" : "Pending"} /></button></td>
                 <td className="p-3"><Button variant="ghost" size="icon" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4" /></Button></td>
               </tr>
             ))}

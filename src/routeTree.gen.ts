@@ -18,6 +18,7 @@ import { Route as HostelIdRouteImport } from './routes/hostel.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
+import { Route as AuthenticatedAdminResidentsRouteImport } from './routes/_authenticated/admin.residents'
 import { Route as AuthenticatedAdminHostelRouteImport } from './routes/_authenticated/admin.hostel'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 
@@ -65,6 +66,12 @@ const AuthenticatedAdminRoomsRoute = AuthenticatedAdminRoomsRouteImport.update({
   path: '/admin/rooms',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminResidentsRoute =
+  AuthenticatedAdminResidentsRouteImport.update({
+    id: '/admin/residents',
+    path: '/admin/residents',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminHostelRoute =
   AuthenticatedAdminHostelRouteImport.update({
     id: '/admin/hostel',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/hostel/$id': typeof HostelIdRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/hostel/$id': typeof HostelIdRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/hostel/$id': typeof HostelIdRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/hostel': typeof AuthenticatedAdminHostelRoute
+  '/_authenticated/admin/residents': typeof AuthenticatedAdminResidentsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/setup': typeof AuthenticatedAdminSetupRoute
 }
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/admin/dashboard'
     | '/admin/hostel'
+    | '/admin/residents'
     | '/admin/rooms'
     | '/admin/setup'
   fileRoutesByTo: FileRoutesByTo
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/admin/dashboard'
     | '/admin/hostel'
+    | '/admin/residents'
     | '/admin/rooms'
     | '/admin/setup'
   id:
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/hostel/$id'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/hostel'
+    | '/_authenticated/admin/residents'
     | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/setup'
   fileRoutesById: FileRoutesById
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRoomsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/residents': {
+      id: '/_authenticated/admin/residents'
+      path: '/admin/residents'
+      fullPath: '/admin/residents'
+      preLoaderRoute: typeof AuthenticatedAdminResidentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/hostel': {
       id: '/_authenticated/admin/hostel'
       path: '/admin/hostel'
@@ -251,6 +271,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminHostelRoute: typeof AuthenticatedAdminHostelRoute
+  AuthenticatedAdminResidentsRoute: typeof AuthenticatedAdminResidentsRoute
   AuthenticatedAdminRoomsRoute: typeof AuthenticatedAdminRoomsRoute
   AuthenticatedAdminSetupRoute: typeof AuthenticatedAdminSetupRoute
 }
@@ -259,6 +280,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminHostelRoute: AuthenticatedAdminHostelRoute,
+  AuthenticatedAdminResidentsRoute: AuthenticatedAdminResidentsRoute,
   AuthenticatedAdminRoomsRoute: AuthenticatedAdminRoomsRoute,
   AuthenticatedAdminSetupRoute: AuthenticatedAdminSetupRoute,
 }
