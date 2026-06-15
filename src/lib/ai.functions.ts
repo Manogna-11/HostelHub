@@ -3,14 +3,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import { aiChat, safeParseJson } from "./ai.server";
 
-const CATEGORIES = ["electrical", "plumbing", "cleaning", "internet", "furniture", "mess", "other"] as const;
-const PRIORITIES = ["low", "medium", "high"] as const;
-
-// AI Feature 1: Complaint classification
-export const classifyComplaint = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+// ── AI Feature 1: Natural-language hostel search (public) ──────────────
+export const aiHostelSearch = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({ title: z.string().min(1).max(200), description: z.string().min(1).max(2000) }).parse(d),
+    z.object({ query: z.string().min(1).max(500) }).parse(d),
   )
   .handler(async ({ data }) => {
     const raw = await aiChat(
@@ -18,95 +14,47 @@ export const classifyComplaint = createServerFn({ method: "POST" })
         {
           role: "system",
           content:
-            "You are a hostel maintenance triage assistant. Classify the complaint and respond ONLY with JSON: " +
-            '{"category": one of [electrical, plumbing, cleaning, internet, furniture, mess, other], ' +
-            '"priority": one of [low, medium, high], "summary": a concise one-sentence maintenance summary}.',
+            "You convert a student's natural-language hostel search into filters. " +
+            "Respond ONLY with JSON: " +
+            '{"city": string|null, "college": string|null, "gender": one of ["boys","girls","coliving",null], ' +
+            '"maxBudget": number|null (monthly rent in INR), ' +
+            '"facilities": array of any of ["wifi","ac","attached_bathroom","mess_facility","laundry","parking","cctv","security_guard","power_backup","water_facility","study_room","gym","medical_support"], ' +
+            '"keywords": string (anything else useful, e.g. "good food")}. ' +
+            'Map "girls"/"women"->girls, "boys"/"men"->boys, "co-living"/"coed"->coliving. "good food" implies mess_facility.',
         },
-        { role: "user", content: `Title: ${data.title}\nDescription: ${data.description}` },
+        { role: "user", content: data.query },
       ],
       true,
     );
-    const parsed = safeParseJson(raw, { category: "other", priority: "medium", summary: data.title });
-    const category = (CATEGORIES as readonly string[]).includes(parsed.category) ? parsed.category : "other";
-    const priority = (PRIORITIES as readonly string[]).includes(parsed.priority) ? parsed.priority : "medium";
-    return { category, priority, summary: String(parsed.summary || data.title).slice(0, 300) };
-  });
-
-// AI Feature 3: Notice summarizer
-export const summarizeNotice = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ title: z.string().min(1).max(200), description: z.string().min(1).max(4000) }).parse(d),
-  )
-  .handler(async ({ data }) => {
-    const raw = await aiChat(
-      [
-        {
-          role: "system",
-          content:
-            "Summarize the hostel notice. Respond ONLY with JSON: " +
-            '{"summary": short 1-2 sentence summary, "key_points": array of up to 4 short bullet strings, ' +
-            '"deadlines": array of important dates/deadlines as short strings (empty if none)}.',
-        },
-        { role: "user", content: `Title: ${data.title}\nNotice: ${data.description}` },
-      ],
-      true,
-    );
-    const parsed = safeParseJson<{ summary: string; key_points: string[]; deadlines: string[] }>(raw, {
-      summary: data.description.slice(0, 160),
-      key_points: [],
-      deadlines: [],
-    });
+    const parsed = safeParseJson<{
+      city: string | null;
+      college: string | null;
+      gender: string | null;
+      maxBudget: number | null;
+      facilities: string[];
+      keywords: string;
+    }>(raw, { city: null, college: null, gender: null, maxBudget: null, facilities: [], keywords: data.query });
     return {
-      summary: String(parsed.summary || "").slice(0, 400),
-      key_points: (parsed.key_points || []).slice(0, 4).map((s) => String(s).slice(0, 120)),
-      deadlines: (parsed.deadlines || []).slice(0, 4).map((s) => String(s).slice(0, 120)),
+      city: parsed.city ?? null,
+      college: parsed.college ?? null,
+      gender: ["boys", "girls", "coliving"].includes(parsed.gender ?? "") ? parsed.gender : null,
+      maxBudget: typeof parsed.maxBudget === "number" ? parsed.maxBudget : null,
+      facilities: Array.isArray(parsed.facilities) ? parsed.facilities.slice(0, 13) : [],
+      keywords: String(parsed.keywords ?? "").slice(0, 200),
     };
   });
 
-// AI Feature 4: Feedback sentiment analysis
-export const analyzeFeedback = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ rating: z.number().min(1).max(5), text: z.string().min(1).max(2000) }).parse(d),
-  )
-  .handler(async ({ data }) => {
-    const raw = await aiChat(
-      [
-        {
-          role: "system",
-          content:
-            "Analyze hostel feedback sentiment. Respond ONLY with JSON: " +
-            '{"sentiment": one of [positive, neutral, negative], "score": number from -1 to 1, ' +
-            '"summary": one short sentence summary}.',
-        },
-        { role: "user", content: `Rating: ${data.rating}/5\nFeedback: ${data.text}` },
-      ],
-      true,
-    );
-    const parsed = safeParseJson<{ sentiment: string; score: number; summary: string }>(raw, {
-      sentiment: data.rating >= 4 ? "positive" : data.rating <= 2 ? "negative" : "neutral",
-      score: (data.rating - 3) / 2,
-      summary: data.text.slice(0, 120),
-    });
-    const sentiment = ["positive", "neutral", "negative"].includes(parsed.sentiment) ? parsed.sentiment : "neutral";
-    let score = Number(parsed.score);
-    if (Number.isNaN(score)) score = 0;
-    score = Math.max(-1, Math.min(1, score));
-    return { sentiment, score, summary: String(parsed.summary || "").slice(0, 200) };
-  });
-
-// AI Feature 2: Hostel Assistant chatbot
-export const askAssistant = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+// ── AI Feature 2: Per-hostel chat assistant (public) ──────────────────
+export const askHostelAssistant = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
+        context: z.string().max(6000),
         history: z
           .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(4000) }))
-          .max(20)
+          .max(16)
           .default([]),
-        message: z.string().min(1).max(2000),
+        message: z.string().min(1).max(1000),
       })
       .parse(d),
   )
@@ -115,13 +63,91 @@ export const askAssistant = createServerFn({ method: "POST" })
       {
         role: "system",
         content:
-          "You are 'HostelHub Assistant', a friendly AI helper for a student hostel management portal. " +
-          "Help students with hostel rules, complaint procedures (they can file complaints in the Complaints section which are auto-classified by AI), " +
-          "room allocation, mess timings (Breakfast 7:30-9:30, Lunch 12:30-2:30, Snacks 5-6, Dinner 8-9:30), notices, and navigating the portal. " +
-          "Be concise, warm, and helpful. Use markdown formatting when useful.",
+          "You are HostelHub Assistant, helping a student decide on a hostel. " +
+          "Answer ONLY using the hostel details below. If something is not listed, say it's not specified and suggest sending an inquiry. " +
+          "Be concise and friendly.\n\nHOSTEL DETAILS:\n" +
+          data.context,
       },
       ...data.history,
       { role: "user", content: data.message },
     ]);
     return { reply };
+  });
+
+// ── AI Feature 5: Review sentiment analysis (admin) ───────────────────
+export const analyzeReviews = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        reviews: z.array(z.object({ rating: z.number(), comment: z.string().max(2000) })).max(60),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    if (data.reviews.length === 0)
+      return { positive: "No reviews yet.", negative: "No reviews yet.", suggestions: [] as string[] };
+    const raw = await aiChat(
+      [
+        {
+          role: "system",
+          content:
+            "Analyze these student hostel reviews. Respond ONLY with JSON: " +
+            '{"positive": short paragraph of what students praise, ' +
+            '"negative": short paragraph of common complaints, ' +
+            '"suggestions": array of up to 4 short improvement suggestions}.',
+        },
+        { role: "user", content: data.reviews.map((r) => `(${r.rating}/5) ${r.comment}`).join("\n") },
+      ],
+      true,
+    );
+    const parsed = safeParseJson<{ positive: string; negative: string; suggestions: string[] }>(raw, {
+      positive: "",
+      negative: "",
+      suggestions: [],
+    });
+    return {
+      positive: String(parsed.positive ?? "").slice(0, 600),
+      negative: String(parsed.negative ?? "").slice(0, 600),
+      suggestions: (parsed.suggestions ?? []).slice(0, 4).map((s) => String(s).slice(0, 160)),
+    };
+  });
+
+// ── AI Feature 4: Complaint analysis (admin) ──────────────────────────
+export const analyzeComplaints = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        complaints: z.array(z.object({ title: z.string().max(300), description: z.string().max(2000) })).max(60),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    if (data.complaints.length === 0)
+      return { summary: "No complaints to analyze.", urgent: [] as string[], recurring: [] as string[] };
+    const raw = await aiChat(
+      [
+        {
+          role: "system",
+          content:
+            "Analyze these hostel complaints. Respond ONLY with JSON: " +
+            '{"summary": 1-2 sentence overview, ' +
+            '"urgent": array of up to 4 short urgent issue strings, ' +
+            '"recurring": array of up to 4 short recurring-issue strings}.',
+        },
+        { role: "user", content: data.complaints.map((c) => `${c.title}: ${c.description}`).join("\n") },
+      ],
+      true,
+    );
+    const parsed = safeParseJson<{ summary: string; urgent: string[]; recurring: string[] }>(raw, {
+      summary: "",
+      urgent: [],
+      recurring: [],
+    });
+    return {
+      summary: String(parsed.summary ?? "").slice(0, 400),
+      urgent: (parsed.urgent ?? []).slice(0, 4).map((s) => String(s).slice(0, 160)),
+      recurring: (parsed.recurring ?? []).slice(0, 4).map((s) => String(s).slice(0, 160)),
+    };
   });
