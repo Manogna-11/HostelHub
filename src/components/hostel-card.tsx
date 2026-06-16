@@ -17,6 +17,7 @@ export type HostelCardData = {
   review_count: number;
   facilities: unknown;
   image?: string | null;
+  available_beds?: number | null;
 };
 
 const PLACEHOLDER = "https://picsum.photos/seed/hostelhub/800/600";
