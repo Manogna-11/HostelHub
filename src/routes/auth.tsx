@@ -126,13 +126,6 @@ function AuthForm({ role, onBack }: { role: AppRole; onBack: () => void }) {
     }
   };
 
-  const googleSignIn = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) return toast.error("Google sign-in failed.");
-    if (result.redirected) return;
-    navigate({ to: "/dashboard" });
-  };
-
   const accent = role === "admin" ? "bg-foreground/10 text-foreground" : "bg-primary/10 text-primary";
 
   return (
