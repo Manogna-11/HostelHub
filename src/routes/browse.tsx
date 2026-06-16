@@ -1,18 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal, Sparkles, ArrowLeft, Loader2, X } from "lucide-react";
+import { Search, SlidersHorizontal, Sparkles, Loader2, X, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { aiHostelSearch } from "@/lib/ai.functions";
-import { FACILITIES, HOSTEL_TYPE_LABEL, type HostelType } from "@/lib/hostels";
-import { HostelCard, type HostelCardData } from "@/components/hostel-card";
+import { FACILITIES, HOSTEL_TYPE_LABEL, POPULAR_CITIES, fetchPublishedHostels, type HostelType, type HostelRow } from "@/lib/hostels";
+import { HostelCard } from "@/components/hostel-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import logo from "@/assets/logo.png";
 
+type BrowseSearch = { city?: string };
+
 export const Route = createFileRoute("/browse")({
+  validateSearch: (search: Record<string, unknown>): BrowseSearch => ({
+    city: typeof search.city === "string" ? search.city : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Browse Student Hostels & PGs — HostelHub" },
@@ -22,45 +26,35 @@ export const Route = createFileRoute("/browse")({
   component: Browse,
 });
 
-type Row = HostelCardData & { city: string | null; college_name: string | null };
-
 function Browse() {
-  const [all, setAll] = useState<Row[]>([]);
+  const { city: initialCity } = Route.useSearch();
+  const [all, setAll] = useState<HostelRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiQuery, setAiQuery] = useState("");
 
   const [text, setText] = useState("");
-  const [city, setCity] = useState<string>("");
+  const [city, setCity] = useState<string>(initialCity ?? "");
   const [gender, setGender] = useState<HostelType | "">("");
   const [maxBudget, setMaxBudget] = useState<string>("");
   const [facilities, setFacilities] = useState<string[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const { data: hostels } = await supabase
-        .from("hostels")
-        .select("id,name,city,college_name,distance_from_college,hostel_type,single_fee,double_fee,triple_fee,rating,review_count,facilities")
-        .eq("is_published", true)
-        .order("rating", { ascending: false });
-      const ids = (hostels ?? []).map((h) => h.id);
-      const imgMap: Record<string, string> = {};
-      if (ids.length) {
-        const { data: imgs } = await supabase
-          .from("hostel_images")
-          .select("hostel_id,url,sort_order")
-          .in("hostel_id", ids)
-          .order("sort_order", { ascending: true });
-        (imgs ?? []).forEach((im) => {
-          if (!imgMap[im.hostel_id]) imgMap[im.hostel_id] = im.url;
-        });
-      }
-      setAll((hostels ?? []).map((h) => ({ ...(h as Row), image: imgMap[h.id] ?? null })));
-      setLoading(false);
-    })();
+    fetchPublishedHostels()
+      .then(setAll)
+      .finally(() => setLoading(false));
   }, []);
 
-  const cities = useMemo(() => Array.from(new Set(all.map((h) => h.city).filter(Boolean))) as string[], [all]);
+  useEffect(() => {
+    setCity(initialCity ?? "");
+  }, [initialCity]);
+
+  const cities = useMemo(
+    () => Array.from(new Set([...POPULAR_CITIES, ...all.map((h) => h.city).filter(Boolean) as string[]])),
+    [all],
+  );
+
+  const hasFilters = !!(city || gender || maxBudget || facilities.length || text);
 
   const filtered = useMemo(() => {
     const q = text.trim().toLowerCase();
@@ -83,6 +77,14 @@ function Browse() {
       return true;
     });
   }, [all, text, city, gender, maxBudget, facilities]);
+
+  // When there are no exact matches, recommend similar hostels (relax to city, else top rated).
+  const similar = useMemo(() => {
+    if (filtered.length > 0) return [];
+    const pool = city ? all.filter((h) => h.city === city) : all;
+    const base = pool.length ? pool : all;
+    return [...base].sort((a, b) => b.rating - a.rating).slice(0, 8);
+  }, [filtered, all, city]);
 
   const toggleFacility = (key: string) =>
     setFacilities((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -124,7 +126,7 @@ function Browse() {
               value={aiQuery}
               onChange={(e) => setAiQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && runAiSearch()}
-              placeholder="Ask AI: girls hostel near VIT under ₹6000"
+              placeholder="Ask AI: girls hostel near Hyderabad under ₹7000"
               className="pl-9 pr-24"
             />
             <Button size="sm" className="absolute right-1 top-1/2 -translate-y-1/2 gap-1" onClick={runAiSearch} disabled={aiLoading}>
@@ -136,11 +138,25 @@ function Browse() {
             <Link to="/auth">Sign in</Link>
           </Button>
         </div>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 pb-3 lg:px-6">
+          <span className="text-xs font-semibold text-muted-foreground">Popular:</span>
+          {POPULAR_CITIES.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCity(city === c ? "" : c)}
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                city === c ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary hover:text-primary"
+              }`}
+            >
+              <MapPin className="h-3 w-3" /> {c}
+            </button>
+          ))}
+        </div>
       </header>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[260px_1fr] lg:px-6">
         {/* Filters */}
-        <aside className="stat-card h-fit p-5 lg:sticky lg:top-20">
+        <aside className="stat-card h-fit p-5 lg:sticky lg:top-32">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="flex items-center gap-2 font-semibold"><SlidersHorizontal className="h-4 w-4" /> Filters</h2>
             <button onClick={clearAll} className="text-xs text-primary hover:underline">Clear</button>
@@ -194,7 +210,7 @@ function Browse() {
             </div>
           </div>
 
-          {(city || gender || maxBudget || facilities.length > 0 || text) && (
+          {hasFilters && (
             <div className="mb-4 flex flex-wrap gap-2">
               {[city && city, gender && HOSTEL_TYPE_LABEL[gender as HostelType], maxBudget && `≤ ₹${maxBudget}`, text && `"${text}"`]
                 .filter(Boolean)
@@ -215,16 +231,21 @@ function Browse() {
                 <div key={i} className="stat-card aspect-[4/3] animate-pulse bg-muted/40" />
               ))}
             </div>
-          ) : filtered.length === 0 ? (
-            <div className="stat-card flex flex-col items-center justify-center py-20 text-center">
-              <Search className="mb-3 h-10 w-10 text-muted-foreground" />
-              <p className="font-medium">No hostels match your filters</p>
-              <p className="text-sm text-muted-foreground">Try adjusting or clearing your filters.</p>
-              <Button onClick={clearAll} variant="outline" className="mt-4">Clear filters</Button>
-            </div>
-          ) : (
+          ) : filtered.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((h) => <HostelCard key={h.id} hostel={h} />)}
+            </div>
+          ) : (
+            <div>
+              <div className="stat-card mb-5 flex flex-col items-center justify-center py-8 text-center">
+                <Search className="mb-3 h-9 w-9 text-muted-foreground" />
+                <p className="font-medium">No exact matches found. Showing similar hostels.</p>
+                <p className="text-sm text-muted-foreground">Try adjusting or clearing your filters for more options.</p>
+                <Button onClick={clearAll} variant="outline" className="mt-4">Clear filters</Button>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {similar.map((h) => <HostelCard key={h.id} hostel={h} />)}
+              </div>
             </div>
           )}
         </section>
