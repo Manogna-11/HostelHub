@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   Bot,
@@ -9,9 +9,14 @@ import {
   Building2,
   ArrowRight,
   MessageSquare,
+  TrendingUp,
+  Clock,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { fetchPublishedHostels, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
+import { HostelCard } from "@/components/hostel-card";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
 
@@ -43,13 +48,68 @@ const features = [
   { icon: ShieldCheck, title: "Owner Dashboard", desc: "Hostel owners manage rooms, residents, complaints & analytics." },
 ];
 
+function minFee(h: HostelRow) {
+  return Math.min(...[h.single_fee, h.double_fee, h.triple_fee].filter((f): f is number => f != null));
+}
+
+function HostelRowSection({
+  icon: Icon,
+  title,
+  subtitle,
+  hostels,
+}: {
+  icon: typeof Star;
+  title: string;
+  subtitle: string;
+  hostels: HostelRow[];
+}) {
+  if (hostels.length === 0) return null;
+  return (
+    <section className="mx-auto max-w-6xl px-6 pb-12">
+      <div className="mb-5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">{title}</h2>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          </div>
+        </div>
+        <Button asChild variant="ghost" size="sm" className="gap-1">
+          <Link to="/browse">View all <ArrowRight className="h-4 w-4" /></Link>
+        </Button>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {hostels.map((h) => <HostelCard key={h.id} hostel={h} />)}
+      </div>
+    </section>
+  );
+}
+
 function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [hostels, setHostels] = useState<HostelRow[]>([]);
+  const [loadingHostels, setLoadingHostels] = useState(true);
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/dashboard" });
   }, [user, loading, navigate]);
+
+  useEffect(() => {
+    fetchPublishedHostels()
+      .then(setHostels)
+      .finally(() => setLoadingHostels(false));
+  }, []);
+
+  const featured = useMemo(() => hostels.slice(0, 8), [hostels]);
+  const topRated = useMemo(() => [...hostels].sort((a, b) => b.rating - a.rating).slice(0, 4), [hostels]);
+  const recent = useMemo(
+    () => [...hostels].sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? "")).slice(0, 4),
+    [hostels],
+  );
+  const budget = useMemo(() => [...hostels].sort((a, b) => minFee(a) - minFee(b)).slice(0, 4), [hostels]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,12 +118,17 @@ function Landing() {
           <img src={logo} alt="HostelHub" width={36} height={36} className="h-9 w-9" />
           <span className="text-lg font-bold tracking-tight">HostelHub</span>
         </div>
-        <Button asChild variant="outline">
-          <Link to="/auth">Sign in</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost">
+            <Link to="/browse">Browse</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/auth">Sign in</Link>
+          </Button>
+        </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 pb-16 pt-8 lg:grid-cols-2 lg:pt-16">
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 pb-12 pt-8 lg:grid-cols-2 lg:pt-16">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
             <Bot className="h-3.5 w-3.5" /> AI-Powered Hostel Discovery
@@ -78,13 +143,29 @@ function Landing() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="gap-2">
-              <Link to="/auth">
-                Get Started <ArrowRight className="h-4 w-4" />
+              <Link to="/browse">
+                Browse hostels <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/browse">Browse hostels</Link>
+              <Link to="/auth">Get Started</Link>
             </Button>
+          </div>
+
+          <div className="mt-8">
+            <p className="mb-2 text-sm font-semibold text-muted-foreground">Popular locations</p>
+            <div className="flex flex-wrap gap-2">
+              {POPULAR_CITIES.map((c) => (
+                <Link
+                  key={c}
+                  to="/browse"
+                  search={{ city: c }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
+                >
+                  <MapPin className="h-3.5 w-3.5" /> {c}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
         <div className="relative">
@@ -98,7 +179,24 @@ function Landing() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-24">
+      {loadingHostels ? (
+        <section className="mx-auto max-w-6xl px-6 pb-12">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="stat-card aspect-[4/3] animate-pulse bg-muted/40" />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <>
+          <HostelRowSection icon={Star} title="Featured Hostels" subtitle="Hand-picked stays loved by students" hostels={featured} />
+          <HostelRowSection icon={TrendingUp} title="Top Rated Hostels" subtitle="Highest rated by residents" hostels={topRated} />
+          <HostelRowSection icon={Clock} title="Recently Added" subtitle="The newest listings on HostelHub" hostels={recent} />
+          <HostelRowSection icon={Wallet} title="Budget Friendly Hostels" subtitle="Great stays that won't break the bank" hostels={budget} />
+        </>
+      )}
+
+      <section className="mx-auto max-w-6xl px-6 py-12">
         <h2 className="mb-8 text-center text-2xl font-bold">Everything you need to find the right stay</h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
