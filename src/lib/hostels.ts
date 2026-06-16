@@ -7,7 +7,7 @@ export type HostelType = "boys" | "girls" | "coliving";
 
 export type Facilities = Record<string, boolean>;
 
-export type HostelRow = HostelCardData & { city: string | null; college_name: string | null };
+export type HostelRow = HostelCardData & { city: string | null; college_name: string | null; created_at?: string };
 
 export const POPULAR_CITIES = ["Hyderabad", "Bangalore", "Chennai", "Vijayawada", "Visakhapatnam"];
 
