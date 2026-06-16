@@ -17,6 +17,7 @@ export type HostelCardData = {
   review_count: number;
   facilities: unknown;
   image?: string | null;
+  available_beds?: number | null;
 };
 
 const PLACEHOLDER = "https://picsum.photos/seed/hostelhub/800/600";
@@ -69,9 +70,11 @@ export function HostelCard({ hostel }: { hostel: HostelCardData }) {
             <span className="text-lg font-bold">{formatINR(Number.isFinite(fromFee) ? fromFee : null)}</span>
             <span className="text-xs text-muted-foreground">/mo onwards</span>
           </div>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-            <BedDouble className="h-3.5 w-3.5" /> {hostel.review_count} reviews
-          </span>
+          {hostel.available_beds != null && (
+            <span className="flex items-center gap-1 text-xs font-medium text-success">
+              <BedDouble className="h-3.5 w-3.5" /> {hostel.available_beds} beds free
+            </span>
+          )}
         </div>
       </div>
     </Link>

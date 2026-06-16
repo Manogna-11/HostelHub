@@ -1,8 +1,50 @@
 // Shared, client-safe types & helpers for the hostel platform.
 
+import { supabase } from "@/integrations/supabase/client";
+import type { HostelCardData } from "@/components/hostel-card";
+
 export type HostelType = "boys" | "girls" | "coliving";
 
 export type Facilities = Record<string, boolean>;
+
+export type HostelRow = HostelCardData & { city: string | null; college_name: string | null; created_at?: string };
+
+export const POPULAR_CITIES = ["Hyderabad", "Bangalore", "Chennai", "Vijayawada", "Visakhapatnam"];
+
+/** Loads all published hostels with a cover image and available-bed counts. */
+export async function fetchPublishedHostels(): Promise<HostelRow[]> {
+  const { data: hostels } = await supabase
+    .from("hostels")
+    .select(
+      "id,name,city,college_name,distance_from_college,hostel_type,single_fee,double_fee,triple_fee,rating,review_count,facilities,created_at",
+    )
+    .eq("is_published", true)
+    .order("rating", { ascending: false });
+
+  const rows = hostels ?? [];
+  const ids = rows.map((h) => h.id);
+  const imgMap: Record<string, string> = {};
+  const bedMap: Record<string, number> = {};
+
+  if (ids.length) {
+    const [{ data: imgs }, { data: rooms }] = await Promise.all([
+      supabase.from("hostel_images").select("hostel_id,url,sort_order").in("hostel_id", ids).order("sort_order", { ascending: true }),
+      supabase.from("rooms").select("hostel_id,capacity,occupied_beds").in("hostel_id", ids),
+    ]);
+    (imgs ?? []).forEach((im) => {
+      if (!imgMap[im.hostel_id]) imgMap[im.hostel_id] = im.url;
+    });
+    (rooms ?? []).forEach((r) => {
+      bedMap[r.hostel_id] = (bedMap[r.hostel_id] ?? 0) + Math.max(0, (r.capacity ?? 0) - (r.occupied_beds ?? 0));
+    });
+  }
+
+  return rows.map((h) => ({
+    ...(h as unknown as HostelRow),
+    image: imgMap[h.id] ?? null,
+    available_beds: bedMap[h.id] ?? 0,
+  }));
+}
 
 export const FACILITIES: { key: string; label: string }[] = [
   { key: "wifi", label: "WiFi" },
