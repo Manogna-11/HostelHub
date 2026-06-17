@@ -16,6 +16,7 @@ import {
   Sun,
   LogOut,
   Shield,
+  Home,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "@/hooks/use-theme";
@@ -28,12 +29,14 @@ import logo from "@/assets/logo.png";
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }> };
 
 const studentNav: NavItem[] = [
+  { to: "/", label: "Home", icon: Home },
   { to: "/browse", label: "Discover", icon: Search },
   { to: "/inquiries", label: "My Inquiries", icon: Inbox },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
 const adminNav: NavItem[] = [
+  { to: "/", label: "Home", icon: Home },
   { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/hostel", label: "My Hostel", icon: Building2 },
   { to: "/admin/rooms", label: "Rooms", icon: BedDouble },
@@ -73,13 +76,13 @@ function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => 
 
 function Brand() {
   return (
-    <div className="flex items-center gap-2.5 px-5 py-5">
+    <Link to="/" className="flex items-center gap-2.5 px-5 py-5 transition-opacity hover:opacity-80">
       <img src={logo} alt="HostelHub logo" width={36} height={36} className="h-9 w-9" />
       <div className="leading-tight">
         <div className="font-bold tracking-tight">HostelHub</div>
         <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">Find your stay</div>
       </div>
-    </div>
+    </Link>
   );
 }
 
