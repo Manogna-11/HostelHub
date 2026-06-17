@@ -62,7 +62,7 @@ function AuthPage() {
           </div>
         </>
       ) : (
-        <AuthForm role={role} onBack={() => setRole(null)} />
+        <AuthForm role={role} initialMode={search.mode ?? "login"} onBack={() => setRole(null)} />
       )}
     </div>
   );
