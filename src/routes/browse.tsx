@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/hooks/use-auth";
 import logo from "@/assets/logo.png";
 
 type BrowseSearch = { city?: string };
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/browse")({
 
 function Browse() {
   const { city: initialCity } = Route.useSearch();
+  const { user } = useAuth();
   const [all, setAll] = useState<HostelRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
@@ -135,7 +137,7 @@ function Browse() {
             </Button>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link to="/auth">Sign in</Link>
+            <Link to={user ? "/dashboard" : "/auth"}>{user ? "Dashboard" : "Sign in"}</Link>
           </Button>
         </div>
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 pb-3 lg:px-6">
@@ -171,17 +173,46 @@ function Browse() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">City</Label>
-              <select value={city} onChange={(e) => setCity(e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm">
-                <option value="">All cities</option>
-                {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <div className="grid grid-cols-2 gap-2">
+                {["", ...cities].map((c) => (
+                  <button
+                    key={c || "all"}
+                    type="button"
+                    onClick={() => setCity(c)}
+                    className={`rounded-md border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                      city === c ? "border-primary bg-primary/10 text-primary" : "border-input bg-background hover:bg-accent"
+                    }`}
+                  >
+                    {c || "All cities"}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Hostel Type</Label>
-              <select value={gender} onChange={(e) => setGender(e.target.value as HostelType | "")} className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm">
-                <option value="">Any</option>
-                {(Object.keys(HOSTEL_TYPE_LABEL) as HostelType[]).map((t) => <option key={t} value={t}>{HOSTEL_TYPE_LABEL[t]}</option>)}
-              </select>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGender("")}
+                  className={`rounded-md border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                    gender === "" ? "border-primary bg-primary/10 text-primary" : "border-input bg-background hover:bg-accent"
+                  }`}
+                >
+                  Any
+                </button>
+                {(Object.keys(HOSTEL_TYPE_LABEL) as HostelType[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setGender(t)}
+                    className={`rounded-md border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                      gender === t ? "border-primary bg-primary/10 text-primary" : "border-input bg-background hover:bg-accent"
+                    }`}
+                  >
+                    {HOSTEL_TYPE_LABEL[t]}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Max Budget (₹/mo)</Label>

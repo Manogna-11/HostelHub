@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Search,
@@ -15,7 +15,6 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
 import { fetchPublishedHostels, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
 import { HostelCard } from "@/components/hostel-card";
 import logo from "@/assets/logo.png";
@@ -89,14 +88,8 @@ function HostelRowSection({
 }
 
 function Landing() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
   const [hostels, setHostels] = useState<HostelRow[]>([]);
   const [loadingHostels, setLoadingHostels] = useState(true);
-
-  useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard" });
-  }, [user, loading, navigate]);
 
   useEffect(() => {
     fetchPublishedHostels()
