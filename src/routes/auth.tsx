@@ -83,9 +83,9 @@ function RoleCard({
   );
 }
 
-function AuthForm({ role, onBack }: { role: AppRole; onBack: () => void }) {
+function AuthForm({ role, initialMode, onBack }: { role: AppRole; initialMode: "login" | "signup"; onBack: () => void }) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
 
