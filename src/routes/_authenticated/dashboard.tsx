@@ -18,7 +18,7 @@ function DashboardRedirect() {
       if (hostelLoading) return;
       navigate({ to: hostel ? "/admin/dashboard" : "/admin/setup" });
     } else {
-      navigate({ to: "/browse" });
+      navigate({ to: "/dashboard/student" });
     }
   }, [role, loading, hostel, hostelLoading, navigate]);
 
