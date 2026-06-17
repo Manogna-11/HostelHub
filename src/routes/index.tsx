@@ -114,16 +114,22 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <img src={logo} alt="HostelHub" width={36} height={36} className="h-9 w-9" />
           <span className="text-lg font-bold tracking-tight">HostelHub</span>
-        </div>
-        <div className="flex items-center gap-2">
+        </Link>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button asChild variant="ghost" className="hidden sm:inline-flex gap-1.5">
+            <Link to="/"><Home className="h-4 w-4" /> Home</Link>
+          </Button>
           <Button asChild variant="ghost">
-            <Link to="/browse">Browse</Link>
+            <Link to="/browse">Browse Hostels</Link>
           </Button>
           <Button asChild variant="outline">
             <Link to="/auth">Sign in</Link>
+          </Button>
+          <Button asChild className="hidden sm:inline-flex">
+            <Link to="/auth">Get Started</Link>
           </Button>
         </div>
       </header>
