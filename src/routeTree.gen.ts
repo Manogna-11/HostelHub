@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as HostelsRouteImport } from './routes/hostels'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentRegisterRouteImport } from './routes/student.register'
+import { Route as StudentLoginRouteImport } from './routes/student.login'
+import { Route as HostelsIdRouteImport } from './routes/hostels.$id'
 import { Route as HostelIdRouteImport } from './routes/hostel.$id'
+import { Route as AdminRegisterRouteImport } from './routes/admin.register'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedInquiriesRouteImport } from './routes/_authenticated/inquiries'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDashboardStudentRouteImport } from './routes/_authenticated/dashboard.student'
+import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedAdminSetupRouteImport } from './routes/_authenticated/admin.setup'
 import { Route as AuthenticatedAdminRoomsRouteImport } from './routes/_authenticated/admin.rooms'
 import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
@@ -31,6 +39,11 @@ import { Route as AuthenticatedAdminComplaintsRouteImport } from './routes/_auth
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HostelsRoute = HostelsRouteImport.update({
+  id: '/hostels',
+  path: '/hostels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrowseRoute = BrowseRouteImport.update({
@@ -52,9 +65,34 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentRegisterRoute = StudentRegisterRouteImport.update({
+  id: '/student/register',
+  path: '/student/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentLoginRoute = StudentLoginRouteImport.update({
+  id: '/student/login',
+  path: '/student/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HostelsIdRoute = HostelsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => HostelsRoute,
+} as any)
 const HostelIdRoute = HostelIdRouteImport.update({
   id: '/hostel/$id',
   path: '/hostel/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRegisterRoute = AdminRegisterRouteImport.update({
+  id: '/admin/register',
+  path: '/admin/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -72,6 +110,18 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardStudentRoute =
+  AuthenticatedDashboardStudentRouteImport.update({
+    id: '/student',
+    path: '/student',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAdminRoute =
+  AuthenticatedDashboardAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedAdminSetupRoute = AuthenticatedAdminSetupRouteImport.update({
   id: '/admin/setup',
   path: '/admin/setup',
@@ -129,11 +179,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/hostels': typeof HostelsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/inquiries': typeof AuthenticatedInquiriesRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/hostels/$id': typeof HostelsIdRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
@@ -143,16 +199,24 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/dashboard/student': typeof AuthenticatedDashboardStudentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/hostels': typeof HostelsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/inquiries': typeof AuthenticatedInquiriesRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/hostels/$id': typeof HostelsIdRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/hostel': typeof AuthenticatedAdminHostelRoute
@@ -162,6 +226,8 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/admin/setup': typeof AuthenticatedAdminSetupRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/dashboard/student': typeof AuthenticatedDashboardStudentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,11 +235,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/hostels': typeof HostelsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/inquiries': typeof AuthenticatedInquiriesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/register': typeof AdminRegisterRoute
   '/hostel/$id': typeof HostelIdRoute
+  '/hostels/$id': typeof HostelsIdRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/register': typeof StudentRegisterRoute
   '/_authenticated/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/hostel': typeof AuthenticatedAdminHostelRoute
@@ -183,6 +255,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/_authenticated/admin/rooms': typeof AuthenticatedAdminRoomsRoute
   '/_authenticated/admin/setup': typeof AuthenticatedAdminSetupRoute
+  '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/_authenticated/dashboard/student': typeof AuthenticatedDashboardStudentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,11 +264,17 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/browse'
+    | '/hostels'
     | '/sitemap.xml'
     | '/dashboard'
     | '/inquiries'
     | '/profile'
+    | '/admin/login'
+    | '/admin/register'
     | '/hostel/$id'
+    | '/hostels/$id'
+    | '/student/login'
+    | '/student/register'
     | '/admin/complaints'
     | '/admin/dashboard'
     | '/admin/hostel'
@@ -204,16 +284,24 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/rooms'
     | '/admin/setup'
+    | '/dashboard/admin'
+    | '/dashboard/student'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/browse'
+    | '/hostels'
     | '/sitemap.xml'
     | '/dashboard'
     | '/inquiries'
     | '/profile'
+    | '/admin/login'
+    | '/admin/register'
     | '/hostel/$id'
+    | '/hostels/$id'
+    | '/student/login'
+    | '/student/register'
     | '/admin/complaints'
     | '/admin/dashboard'
     | '/admin/hostel'
@@ -223,17 +311,25 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/rooms'
     | '/admin/setup'
+    | '/dashboard/admin'
+    | '/dashboard/student'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/browse'
+    | '/hostels'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
     | '/_authenticated/inquiries'
     | '/_authenticated/profile'
+    | '/admin/login'
+    | '/admin/register'
     | '/hostel/$id'
+    | '/hostels/$id'
+    | '/student/login'
+    | '/student/register'
     | '/_authenticated/admin/complaints'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/hostel'
@@ -243,6 +339,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/reviews'
     | '/_authenticated/admin/rooms'
     | '/_authenticated/admin/setup'
+    | '/_authenticated/dashboard/admin'
+    | '/_authenticated/dashboard/student'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -250,8 +348,13 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  HostelsRoute: typeof HostelsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminRegisterRoute: typeof AdminRegisterRoute
   HostelIdRoute: typeof HostelIdRoute
+  StudentLoginRoute: typeof StudentLoginRoute
+  StudentRegisterRoute: typeof StudentRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -261,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hostels': {
+      id: '/hostels'
+      path: '/hostels'
+      fullPath: '/hostels'
+      preLoaderRoute: typeof HostelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/browse': {
@@ -291,11 +401,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/register': {
+      id: '/student/register'
+      path: '/student/register'
+      fullPath: '/student/register'
+      preLoaderRoute: typeof StudentRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/login': {
+      id: '/student/login'
+      path: '/student/login'
+      fullPath: '/student/login'
+      preLoaderRoute: typeof StudentLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hostels/$id': {
+      id: '/hostels/$id'
+      path: '/$id'
+      fullPath: '/hostels/$id'
+      preLoaderRoute: typeof HostelsIdRouteImport
+      parentRoute: typeof HostelsRoute
+    }
     '/hostel/$id': {
       id: '/hostel/$id'
       path: '/hostel/$id'
       fullPath: '/hostel/$id'
       preLoaderRoute: typeof HostelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/register': {
+      id: '/admin/register'
+      path: '/admin/register'
+      fullPath: '/admin/register'
+      preLoaderRoute: typeof AdminRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/profile': {
@@ -318,6 +463,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/student': {
+      id: '/_authenticated/dashboard/student'
+      path: '/student'
+      fullPath: '/dashboard/student'
+      preLoaderRoute: typeof AuthenticatedDashboardStudentRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/admin': {
+      id: '/_authenticated/dashboard/admin'
+      path: '/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/admin/setup': {
       id: '/_authenticated/admin/setup'
@@ -385,8 +544,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAdminRoute: typeof AuthenticatedDashboardAdminRoute
+  AuthenticatedDashboardStudentRoute: typeof AuthenticatedDashboardStudentRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardAdminRoute: AuthenticatedDashboardAdminRoute,
+    AuthenticatedDashboardStudentRoute: AuthenticatedDashboardStudentRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedInquiriesRoute: typeof AuthenticatedInquiriesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminComplaintsRoute: typeof AuthenticatedAdminComplaintsRoute
@@ -401,7 +576,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedInquiriesRoute: AuthenticatedInquiriesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminComplaintsRoute: AuthenticatedAdminComplaintsRoute,
@@ -418,13 +593,29 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface HostelsRouteChildren {
+  HostelsIdRoute: typeof HostelsIdRoute
+}
+
+const HostelsRouteChildren: HostelsRouteChildren = {
+  HostelsIdRoute: HostelsIdRoute,
+}
+
+const HostelsRouteWithChildren =
+  HostelsRoute._addFileChildren(HostelsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  HostelsRoute: HostelsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminRegisterRoute: AdminRegisterRoute,
   HostelIdRoute: HostelIdRoute,
+  StudentLoginRoute: StudentLoginRoute,
+  StudentRegisterRoute: StudentRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

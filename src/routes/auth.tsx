@@ -9,15 +9,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import logo from "@/assets/logo.png";
 
+type AuthSearch = { role?: AppRole; mode?: "login" | "signup" };
+
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Get Started — HostelHub" }] }),
+  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
+    role: search.role === "admin" || search.role === "student" ? search.role : undefined,
+    mode: search.mode === "signup" ? "signup" : search.mode === "login" ? "login" : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [role, setRole] = useState<AppRole | null>(null);
+  const search = Route.useSearch();
+  const [role, setRole] = useState<AppRole | null>(search.role ?? null);
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/dashboard" });
