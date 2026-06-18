@@ -25,14 +25,14 @@ export const Route = createFileRoute("/browse")({
       { name: "description", content: "Search and filter student hostels and PGs by city, college, budget, gender and amenities." },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(publishedHostelsQueryOptions),
   component: Browse,
 });
 
 function Browse() {
   const { city: initialCity } = Route.useSearch();
   const { user } = useAuth();
-  const [all, setAll] = useState<HostelRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: all = [], isLoading: loading } = useQuery(publishedHostelsQueryOptions);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiQuery, setAiQuery] = useState("");
 
@@ -42,11 +42,6 @@ function Browse() {
   const [maxBudget, setMaxBudget] = useState<string>("");
   const [facilities, setFacilities] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetchPublishedHostels()
-      .then(setAll)
-      .finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     setCity(initialCity ?? "");
