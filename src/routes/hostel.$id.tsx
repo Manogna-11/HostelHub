@@ -2,14 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft, MapPin, Star, Phone, Mail, MessageCircle, Send, Bot, Loader2,
-  ShieldCheck, UtensilsCrossed, BedDouble, Check, Camera,
+  ShieldCheck, UtensilsCrossed, BedDouble, Check, Camera, CalendarCheck, Users, AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { askHostelAssistant } from "@/lib/ai.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  formatINR, facilityList, HOSTEL_TYPE_LABEL, type HostelType,
+  formatINR, facilityList, HOSTEL_TYPE_LABEL, SHARING_TYPES, type HostelType,
 } from "@/lib/hostels";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ type Hostel = Tables<"hostels">;
 type Img = Tables<"hostel_images">;
 type Review = Tables<"reviews">;
 type Room = Tables<"rooms">;
+type Booking = Tables<"bookings">;
 
 const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
 
@@ -36,6 +37,7 @@ function HostelDetails() {
   const [images, setImages] = useState<Img[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState(0);
 
@@ -53,7 +55,21 @@ function HostelDetails() {
     setLoading(false);
   };
 
+  const loadBooking = async () => {
+    if (!user) { setBooking(null); return; }
+    const { data } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("hostel_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .maybeSingle();
+    setBooking((data as Booking) ?? null);
+  };
+
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id]);
+  useEffect(() => { loadBooking(); /* eslint-disable-next-line */ }, [id, user?.id]);
+
 
   if (loading) return <div className="flex h-screen items-center justify-center text-muted-foreground">Loading hostel…</div>;
   if (!hostel) return (
@@ -65,7 +81,9 @@ function HostelDetails() {
 
   const facilities = facilityList(hostel.facilities);
   const security = (hostel.security_info ?? {}) as Record<string, boolean>;
+  const totalBeds = rooms.reduce((s, r) => s + Math.max(0, r.capacity), 0);
   const availableBeds = rooms.reduce((s, r) => s + Math.max(0, r.capacity - r.occupied_beds), 0);
+  const residentsCount = totalBeds - availableBeds;
   const gallery = images.length ? images : [];
   const mapQuery = hostel.latitude && hostel.longitude
     ? `${hostel.latitude},${hostel.longitude}`
@@ -120,6 +138,25 @@ function HostelDetails() {
               )}
               {hostel.description && <p className="mt-4 text-sm leading-relaxed">{hostel.description}</p>}
             </div>
+
+            {/* Occupancy */}
+            <Section title="Occupancy" icon={Users}>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold">{residentsCount}</div>
+                  <div className="text-xs text-muted-foreground">Residents</div>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold text-success">{availableBeds}</div>
+                  <div className="text-xs text-muted-foreground">Vacancies</div>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold">{totalBeds}</div>
+                  <div className="text-xs text-muted-foreground">Total beds</div>
+                </div>
+              </div>
+            </Section>
+
 
             {/* Pricing */}
             <Section title="Pricing" icon={BedDouble}>
@@ -212,14 +249,188 @@ function HostelDetails() {
 
           {/* Sidebar */}
           <div className="space-y-5 lg:sticky lg:top-20 lg:h-fit">
+            <BookingCard
+              hostel={hostel}
+              booking={booking}
+              availableBeds={availableBeds}
+              userId={user?.id}
+              userName={profile?.name}
+              userPhone={profile?.phone}
+              onChanged={loadBooking}
+            />
+            {booking && <ComplaintCard hostelId={id} userId={user?.id} authorName={profile?.name} />}
             <ContactCard hostel={hostel} userId={user?.id} userName={profile?.name} userEmail={profile?.email} />
             <AssistantCard hostel={hostel} facilities={facilities} availableBeds={availableBeds} />
           </div>
+
         </div>
       </div>
     </div>
   );
 }
+
+const BOOKING_STATUS_LABEL: Record<string, string> = {
+  pending: "Booking requested — awaiting confirmation",
+  confirmed: "Booking confirmed 🎉",
+  cancelled: "Booking cancelled",
+};
+
+function BookingCard({
+  hostel, booking, availableBeds, userId, userName, userPhone, onChanged,
+}: {
+  hostel: Hostel;
+  booking: Booking | null;
+  availableBeds: number;
+  userId?: string;
+  userName?: string | null;
+  userPhone?: string | null;
+  onChanged: () => void;
+}) {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    sharing_type: SHARING_TYPES[0] as string,
+    name: userName ?? "",
+    phone: userPhone ?? "",
+    message: "",
+  });
+
+  if (booking) {
+    return (
+      <div className="stat-card p-5">
+        <h2 className="mb-2 flex items-center gap-2 font-semibold"><CalendarCheck className="h-4 w-4 text-primary" /> Your Booking</h2>
+        <p className="text-sm">{BOOKING_STATUS_LABEL[booking.status] ?? booking.status}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{booking.sharing_type}</p>
+        {booking.status !== "cancelled" && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3 w-full"
+            onClick={async () => {
+              const { error } = await supabase.from("bookings").update({ status: "cancelled" }).eq("id", booking.id);
+              if (error) return toast.error("Could not cancel booking.");
+              toast.success("Booking cancelled.");
+              onChanged();
+            }}
+          >
+            Cancel booking
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) { toast.error("Please sign in to book this hostel."); navigate({ to: "/auth" }); return; }
+    if (!form.name) return toast.error("Please enter your name.");
+    setSaving(true);
+    const { error } = await supabase.from("bookings").insert({
+      hostel_id: hostel.id,
+      user_id: userId,
+      sharing_type: form.sharing_type,
+      name: form.name,
+      phone: form.phone,
+      message: form.message,
+      status: "pending",
+    });
+    setSaving(false);
+    if (error) return toast.error("Could not book hostel.");
+    toast.success("Booking requested! You can now post complaints as a resident.");
+    setOpen(false);
+    onChanged();
+  };
+
+  return (
+    <div className="stat-card p-5">
+      <h2 className="mb-1 flex items-center gap-2 font-semibold"><CalendarCheck className="h-4 w-4 text-primary" /> Book this hostel</h2>
+      <p className="mb-3 text-xs text-muted-foreground">{availableBeds} beds available</p>
+      {!userId ? (
+        <>
+          <p className="mb-2 text-sm text-muted-foreground">Sign in to book a bed at {hostel.name}.</p>
+          <Button className="w-full" onClick={() => navigate({ to: "/auth" })}>Sign in to book</Button>
+        </>
+      ) : !open ? (
+        <Button className="w-full" disabled={availableBeds <= 0} onClick={() => setOpen(true)}>
+          {availableBeds <= 0 ? "No vacancies" : "Book now"}
+        </Button>
+      ) : (
+        <form onSubmit={submit} className="space-y-2">
+          <div className="space-y-1">
+            <Label className="text-xs">Sharing type</Label>
+            <select
+              value={form.sharing_type}
+              onChange={(e) => setForm({ ...form, sharing_type: e.target.value })}
+              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+            >
+              {SHARING_TYPES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div className="space-y-1"><Label className="text-xs">Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
+          <div className="space-y-1"><Label className="text-xs">Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+          <div className="space-y-1"><Label className="text-xs">Note (optional)</Label><Textarea rows={2} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} /></div>
+          <Button type="submit" className="w-full" disabled={saving}>{saving ? "Booking…" : "Confirm booking"}</Button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function ComplaintCard({ hostelId, userId, authorName }: { hostelId: string; userId?: string; authorName?: string | null }) {
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ title: "", description: "", category: "other" });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId || !form.title) return toast.error("Please add a title.");
+    setSaving(true);
+    const { error } = await supabase.from("complaints").insert({
+      hostel_id: hostelId,
+      user_id: userId,
+      resident_name: authorName ?? "Resident",
+      title: form.title,
+      description: form.description,
+      category: form.category,
+      priority: "medium",
+      status: "pending",
+    });
+    setSaving(false);
+    if (error) return toast.error("Could not submit complaint.");
+    toast.success("Complaint submitted to the hostel.");
+    setForm({ title: "", description: "", category: "other" });
+    setOpen(false);
+  };
+
+  return (
+    <div className="stat-card p-5">
+      <h2 className="mb-1 flex items-center gap-2 font-semibold"><AlertTriangle className="h-4 w-4 text-primary" /> Post a complaint</h2>
+      <p className="mb-3 text-xs text-muted-foreground">As a resident you can raise issues with the hostel.</p>
+      {!open ? (
+        <Button variant="outline" className="w-full" onClick={() => setOpen(true)}>New complaint</Button>
+      ) : (
+        <form onSubmit={submit} className="space-y-2">
+          <div className="space-y-1"><Label className="text-xs">Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
+          <div className="space-y-1"><Label className="text-xs">Description</Label><Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+          <div className="space-y-1">
+            <Label className="text-xs">Category</Label>
+            <select
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+            >
+              {["electrical", "plumbing", "cleaning", "internet", "furniture", "mess", "other"].map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <Button type="submit" className="w-full" disabled={saving}>{saving ? "Submitting…" : "Submit complaint"}</Button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+
 
 function Section({ title, icon: Icon, children }: { title: string; icon?: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
   return (
