@@ -2,14 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft, MapPin, Star, Phone, Mail, MessageCircle, Send, Bot, Loader2,
-  ShieldCheck, UtensilsCrossed, BedDouble, Check, Camera,
+  ShieldCheck, UtensilsCrossed, BedDouble, Check, Camera, CalendarCheck, Users, AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { askHostelAssistant } from "@/lib/ai.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  formatINR, facilityList, HOSTEL_TYPE_LABEL, type HostelType,
+  formatINR, facilityList, HOSTEL_TYPE_LABEL, SHARING_TYPES, type HostelType,
 } from "@/lib/hostels";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
