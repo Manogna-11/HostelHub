@@ -81,7 +81,9 @@ function HostelDetails() {
 
   const facilities = facilityList(hostel.facilities);
   const security = (hostel.security_info ?? {}) as Record<string, boolean>;
+  const totalBeds = rooms.reduce((s, r) => s + Math.max(0, r.capacity), 0);
   const availableBeds = rooms.reduce((s, r) => s + Math.max(0, r.capacity - r.occupied_beds), 0);
+  const residentsCount = totalBeds - availableBeds;
   const gallery = images.length ? images : [];
   const mapQuery = hostel.latitude && hostel.longitude
     ? `${hostel.latitude},${hostel.longitude}`
