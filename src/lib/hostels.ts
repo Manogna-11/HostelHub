@@ -1,5 +1,6 @@
 // Shared, client-safe types & helpers for the hostel platform.
 
+import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { HostelCardData } from "@/components/hostel-card";
 
