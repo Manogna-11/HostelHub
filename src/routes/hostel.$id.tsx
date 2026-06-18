@@ -26,6 +26,7 @@ type Hostel = Tables<"hostels">;
 type Img = Tables<"hostel_images">;
 type Review = Tables<"reviews">;
 type Room = Tables<"rooms">;
+type Booking = Tables<"bookings">;
 
 const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
 
@@ -36,6 +37,7 @@ function HostelDetails() {
   const [images, setImages] = useState<Img[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState(0);
 
@@ -53,7 +55,21 @@ function HostelDetails() {
     setLoading(false);
   };
 
+  const loadBooking = async () => {
+    if (!user) { setBooking(null); return; }
+    const { data } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("hostel_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .maybeSingle();
+    setBooking((data as Booking) ?? null);
+  };
+
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id]);
+  useEffect(() => { loadBooking(); /* eslint-disable-next-line */ }, [id, user?.id]);
+
 
   if (loading) return <div className="flex h-screen items-center justify-center text-muted-foreground">Loading hostel…</div>;
   if (!hostel) return (
