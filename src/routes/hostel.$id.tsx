@@ -249,9 +249,20 @@ function HostelDetails() {
 
           {/* Sidebar */}
           <div className="space-y-5 lg:sticky lg:top-20 lg:h-fit">
+            <BookingCard
+              hostel={hostel}
+              booking={booking}
+              availableBeds={availableBeds}
+              userId={user?.id}
+              userName={profile?.name}
+              userPhone={profile?.phone}
+              onChanged={loadBooking}
+            />
+            {booking && <ComplaintCard hostelId={id} userId={user?.id} authorName={profile?.name} />}
             <ContactCard hostel={hostel} userId={user?.id} userName={profile?.name} userEmail={profile?.email} />
             <AssistantCard hostel={hostel} facilities={facilities} availableBeds={availableBeds} />
           </div>
+
         </div>
       </div>
     </div>
