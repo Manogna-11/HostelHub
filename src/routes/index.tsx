@@ -16,7 +16,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchPublishedHostels, publishedHostelsQueryOptions, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
+import { publishedHostelsQueryOptions, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
 import { HostelCard } from "@/components/hostel-card";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
