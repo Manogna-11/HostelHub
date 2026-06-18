@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          created_at: string
+          hostel_id: string
+          id: string
+          message: string | null
+          name: string | null
+          phone: string | null
+          sharing_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hostel_id: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          sharing_type?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hostel_id?: string
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          sharing_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_hostel_id_fkey"
+            columns: ["hostel_id"]
+            isOneToOne: false
+            referencedRelation: "hostels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       complaints: {
         Row: {
           ai_summary: string | null
@@ -27,6 +74,7 @@ export type Database = {
           status: string
           title: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           ai_summary?: string | null
@@ -40,6 +88,7 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           ai_summary?: string | null
@@ -53,6 +102,7 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
