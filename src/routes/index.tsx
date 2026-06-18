@@ -90,14 +90,8 @@ function HostelRowSection({
 }
 
 function Landing() {
-  const [hostels, setHostels] = useState<HostelRow[]>([]);
-  const [loadingHostels, setLoadingHostels] = useState(true);
+  const { data: hostels = [], isLoading: loadingHostels } = useQuery(publishedHostelsQueryOptions);
 
-  useEffect(() => {
-    fetchPublishedHostels()
-      .then(setHostels)
-      .finally(() => setLoadingHostels(false));
-  }, []);
 
   const featured = useMemo(() => hostels.slice(0, 8), [hostels]);
   const topRated = useMemo(() => [...hostels].sort((a, b) => b.rating - a.rating).slice(0, 4), [hostels]);
