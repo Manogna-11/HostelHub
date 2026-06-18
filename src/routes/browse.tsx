@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal, Sparkles, Loader2, X, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { aiHostelSearch } from "@/lib/ai.functions";
-import { FACILITIES, HOSTEL_TYPE_LABEL, POPULAR_CITIES, fetchPublishedHostels, type HostelType, type HostelRow } from "@/lib/hostels";
+import { FACILITIES, HOSTEL_TYPE_LABEL, POPULAR_CITIES, publishedHostelsQueryOptions, type HostelType } from "@/lib/hostels";
 import { HostelCard } from "@/components/hostel-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,14 +25,14 @@ export const Route = createFileRoute("/browse")({
       { name: "description", content: "Search and filter student hostels and PGs by city, college, budget, gender and amenities." },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(publishedHostelsQueryOptions),
   component: Browse,
 });
 
 function Browse() {
   const { city: initialCity } = Route.useSearch();
   const { user } = useAuth();
-  const [all, setAll] = useState<HostelRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: all = [], isLoading: loading } = useQuery(publishedHostelsQueryOptions);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiQuery, setAiQuery] = useState("");
 
@@ -41,11 +42,6 @@ function Browse() {
   const [maxBudget, setMaxBudget] = useState<string>("");
   const [facilities, setFacilities] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetchPublishedHostels()
-      .then(setAll)
-      .finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     setCity(initialCity ?? "");

@@ -1,5 +1,6 @@
 // Shared, client-safe types & helpers for the hostel platform.
 
+import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { HostelCardData } from "@/components/hostel-card";
 
@@ -45,6 +46,14 @@ export async function fetchPublishedHostels(): Promise<HostelRow[]> {
     available_beds: bedMap[h.id] ?? 0,
   }));
 }
+
+/** Cached query for the published hostels list — keeps navigation instant. */
+export const publishedHostelsQueryOptions = queryOptions({
+  queryKey: ["published-hostels"],
+  queryFn: fetchPublishedHostels,
+  staleTime: 5 * 60_000,
+  gcTime: 30 * 60_000,
+});
 
 export const FACILITIES: { key: string; label: string }[] = [
   { key: "wifi", label: "WiFi" },

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Search,
   Home,
@@ -15,7 +16,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchPublishedHostels, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
+import { publishedHostelsQueryOptions, POPULAR_CITIES, type HostelRow } from "@/lib/hostels";
 import { HostelCard } from "@/components/hostel-card";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(publishedHostelsQueryOptions),
   component: Landing,
 });
 
@@ -88,14 +90,8 @@ function HostelRowSection({
 }
 
 function Landing() {
-  const [hostels, setHostels] = useState<HostelRow[]>([]);
-  const [loadingHostels, setLoadingHostels] = useState(true);
+  const { data: hostels = [], isLoading: loadingHostels } = useQuery(publishedHostelsQueryOptions);
 
-  useEffect(() => {
-    fetchPublishedHostels()
-      .then(setHostels)
-      .finally(() => setLoadingHostels(false));
-  }, []);
 
   const featured = useMemo(() => hostels.slice(0, 8), [hostels]);
   const topRated = useMemo(() => [...hostels].sort((a, b) => b.rating - a.rating).slice(0, 4), [hostels]);
