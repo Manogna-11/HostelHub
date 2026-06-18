@@ -47,6 +47,14 @@ export async function fetchPublishedHostels(): Promise<HostelRow[]> {
   }));
 }
 
+/** Cached query for the published hostels list — keeps navigation instant. */
+export const publishedHostelsQueryOptions = queryOptions({
+  queryKey: ["published-hostels"],
+  queryFn: fetchPublishedHostels,
+  staleTime: 5 * 60_000,
+  gcTime: 30 * 60_000,
+});
+
 export const FACILITIES: { key: string; label: string }[] = [
   { key: "wifi", label: "WiFi" },
   { key: "ac", label: "AC" },
