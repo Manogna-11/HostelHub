@@ -139,6 +139,25 @@ function HostelDetails() {
               {hostel.description && <p className="mt-4 text-sm leading-relaxed">{hostel.description}</p>}
             </div>
 
+            {/* Occupancy */}
+            <Section title="Occupancy" icon={Users}>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold">{residentsCount}</div>
+                  <div className="text-xs text-muted-foreground">Residents</div>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold text-success">{availableBeds}</div>
+                  <div className="text-xs text-muted-foreground">Vacancies</div>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center">
+                  <div className="text-lg font-bold">{totalBeds}</div>
+                  <div className="text-xs text-muted-foreground">Total beds</div>
+                </div>
+              </div>
+            </Section>
+
+
             {/* Pricing */}
             <Section title="Pricing" icon={BedDouble}>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
