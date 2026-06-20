@@ -91,9 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "AI-powered hostel management for students and admins: complaints, rooms, notices, mess, feedback, and a smart assistant." },
       { name: "author", content: "HostelHub AI" },
       { property: "og:title", content: "HostelHub AI — Intelligent Hostel Management" },
-      { property: "og:description", content: "AI-powered hostel management for students and admins." },
+      { property: "og:description", content: "AI-powered hostel management for students and admins: complaints, rooms, notices, mess, feedback, and a smart assistant." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "HostelHub AI — Intelligent Hostel Management" },
+      { name: "twitter:description", content: "AI-powered hostel management for students and admins: complaints, rooms, notices, mess, feedback, and a smart assistant." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c6b31415-a695-4a48-be56-9abd6ee22b27/id-preview-5bd30e94--3d23c3e4-4b66-4ed4-b8ea-bcc030b3154a.lovable.app-1781794483997.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c6b31415-a695-4a48-be56-9abd6ee22b27/id-preview-5bd30e94--3d23c3e4-4b66-4ed4-b8ea-bcc030b3154a.lovable.app-1781794483997.png" },
     ],
     links: [
       {
