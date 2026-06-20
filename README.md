@@ -11,6 +11,7 @@ Designed for educational institutions, private hostels, and student accommodatio
 
 https://smart-dorm-assistant.lovable.app
 
+
 ## 🔗 Repository
 
 https://github.com/Manogna-11/HostelHub-
