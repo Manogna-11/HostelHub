@@ -16,11 +16,17 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          check_in_date: string | null
+          college: string | null
           created_at: string
+          duration_months: number | null
+          email: string | null
+          gender: string | null
           hostel_id: string
           id: string
           message: string | null
           name: string | null
+          payment_method: string | null
           phone: string | null
           sharing_type: string
           status: string
@@ -28,11 +34,17 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          check_in_date?: string | null
+          college?: string | null
           created_at?: string
+          duration_months?: number | null
+          email?: string | null
+          gender?: string | null
           hostel_id: string
           id?: string
           message?: string | null
           name?: string | null
+          payment_method?: string | null
           phone?: string | null
           sharing_type?: string
           status?: string
@@ -40,11 +52,17 @@ export type Database = {
           user_id: string
         }
         Update: {
+          check_in_date?: string | null
+          college?: string | null
           created_at?: string
+          duration_months?: number | null
+          email?: string | null
+          gender?: string | null
           hostel_id?: string
           id?: string
           message?: string | null
           name?: string | null
+          payment_method?: string | null
           phone?: string | null
           sharing_type?: string
           status?: string
