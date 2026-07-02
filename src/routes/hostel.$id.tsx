@@ -30,6 +30,10 @@ type Booking = Tables<"bookings">;
 
 const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
 
+// Anonymous visitors cannot read owner contact fields (email, phone).
+const PUBLIC_HOSTEL_COLUMNS =
+  "rules,id,owner_id,name,description,hostel_type,address,city,state,pincode,college_name,distance_from_college,maps_link,latitude,longitude,single_fee,double_fee,triple_fee,security_deposit,mess_veg_nonveg,mess_timings,mess_menu,security_info,facilities,rating,review_count,is_published,created_at,updated_at";
+
 function HostelDetails() {
   const { id } = Route.useParams();
   const { user, profile } = useAuth();
