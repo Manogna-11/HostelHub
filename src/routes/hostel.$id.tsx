@@ -30,6 +30,10 @@ type Booking = Tables<"bookings">;
 
 const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
 
+// Anonymous visitors cannot read owner contact fields (email, phone).
+const PUBLIC_HOSTEL_COLUMNS =
+  "rules,id,owner_id,name,description,hostel_type,address,city,state,pincode,college_name,distance_from_college,maps_link,latitude,longitude,single_fee,double_fee,triple_fee,security_deposit,mess_veg_nonveg,mess_timings,mess_menu,security_info,facilities,rating,review_count,is_published,created_at,updated_at";
+
 function HostelDetails() {
   const { id } = Route.useParams();
   const { user, profile } = useAuth();
@@ -42,8 +46,10 @@ function HostelDetails() {
   const [active, setActive] = useState(0);
 
   const load = async () => {
+    // Owner contact (email, phone) is only readable by authenticated users.
+    const hostelColumns = (user ? "*" : PUBLIC_HOSTEL_COLUMNS) as "*";
     const [{ data: h }, { data: imgs }, { data: rv }, { data: rm }] = await Promise.all([
-      supabase.from("hostels").select("*").eq("id", id).maybeSingle(),
+      supabase.from("hostels").select(hostelColumns).eq("id", id).maybeSingle(),
       supabase.from("hostel_images").select("*").eq("hostel_id", id).order("sort_order"),
       supabase.from("reviews").select("*").eq("hostel_id", id).order("created_at", { ascending: false }),
       supabase.from("rooms").select("*").eq("hostel_id", id).order("room_number"),
@@ -67,7 +73,7 @@ function HostelDetails() {
     setBooking((data as Booking) ?? null);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [id]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user?.id]);
   useEffect(() => { loadBooking(); /* eslint-disable-next-line */ }, [id, user?.id]);
 
 
