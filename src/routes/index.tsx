@@ -92,6 +92,10 @@ function HostelRowSection({
 
 function Landing() {
   const { data: hostels = [], isLoading: loadingHostels } = useQuery(publishedHostelsQueryOptions);
+  const { user, loading: authLoading } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
 
 
   const featured = useMemo(() => hostels.slice(0, 8), [hostels]);
