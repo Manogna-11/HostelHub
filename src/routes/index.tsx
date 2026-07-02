@@ -120,12 +120,20 @@ function Landing() {
           <Button asChild variant="ghost">
             <Link to="/browse">Browse Hostels</Link>
           </Button>
-          <Button asChild variant="outline">
-            <Link to="/auth">Sign in</Link>
-          </Button>
-          <Button asChild className="hidden sm:inline-flex">
-            <Link to="/auth">Get Started</Link>
-          </Button>
+          {mounted && !authLoading && user ? (
+            <Button asChild variant="outline">
+              <Link to="/dashboard">Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="outline">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild className="hidden sm:inline-flex">
+                <Link to="/auth">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
