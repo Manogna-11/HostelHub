@@ -6,11 +6,15 @@ import type { Tables } from "@/integrations/supabase/types";
 export type Hostel = Tables<"hostels">;
 
 export function useMyHostel() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [hostel, setHostel] = useState<Hostel | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
+    if (authLoading) {
+      setLoading(true);
+      return;
+    }
     if (!user) {
       setHostel(null);
       setLoading(false);
@@ -26,7 +30,7 @@ export function useMyHostel() {
       .maybeSingle();
     setHostel((data as Hostel) ?? null);
     setLoading(false);
-  }, [user]);
+  }, [user, authLoading]);
 
   useEffect(() => {
     load();
