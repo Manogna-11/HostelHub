@@ -73,7 +73,7 @@ function HostelDetails() {
     setBooking((data as Booking) ?? null);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [id]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user?.id]);
   useEffect(() => { loadBooking(); /* eslint-disable-next-line */ }, [id, user?.id]);
 
 
