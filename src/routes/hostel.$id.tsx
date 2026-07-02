@@ -281,8 +281,10 @@ const BOOKING_STATUS_LABEL: Record<string, string> = {
   cancelled: "Booking cancelled",
 };
 
+const PAYMENT_METHODS = ["UPI", "Credit / Debit Card", "Net Banking", "Cash on arrival"];
+
 function BookingCard({
-  hostel, booking, availableBeds, userId, userName, userPhone, onChanged,
+  hostel, booking, availableBeds, userId, userName, userPhone, userEmail, onChanged,
 }: {
   hostel: Hostel;
   booking: Booking | null;
@@ -290,15 +292,23 @@ function BookingCard({
   userId?: string;
   userName?: string | null;
   userPhone?: string | null;
+  userEmail?: string | null;
   onChanged: () => void;
 }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [form, setForm] = useState({
     sharing_type: SHARING_TYPES[0] as string,
     name: userName ?? "",
     phone: userPhone ?? "",
+    email: userEmail ?? "",
+    gender: "",
+    college: "",
+    check_in_date: "",
+    duration_months: "6",
+    payment_method: PAYMENT_METHODS[0],
     message: "",
   });
 
@@ -308,21 +318,22 @@ function BookingCard({
         <h2 className="mb-2 flex items-center gap-2 font-semibold"><CalendarCheck className="h-4 w-4 text-primary" /> Your Booking</h2>
         <p className="text-sm">{BOOKING_STATUS_LABEL[booking.status] ?? booking.status}</p>
         <p className="mt-1 text-xs text-muted-foreground">{booking.sharing_type}</p>
-        {booking.status !== "cancelled" && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-3 w-full"
-            onClick={async () => {
-              const { error } = await supabase.from("bookings").update({ status: "cancelled" }).eq("id", booking.id);
-              if (error) return toast.error("Could not cancel booking.");
-              toast.success("Booking cancelled.");
-              onChanged();
-            }}
-          >
-            Cancel booking
-          </Button>
-        )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-3 w-full"
+          disabled={cancelling}
+          onClick={async () => {
+            setCancelling(true);
+            const { error } = await supabase.from("bookings").delete().eq("id", booking.id);
+            setCancelling(false);
+            if (error) return toast.error("Could not cancel booking.");
+            toast.success("Booking cancelled. You can book again anytime.");
+            onChanged();
+          }}
+        >
+          {cancelling ? "Cancelling…" : "Cancel booking"}
+        </Button>
       </div>
     );
   }
@@ -330,7 +341,9 @@ function BookingCard({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) { toast.error("Please sign in to book this hostel."); navigate({ to: "/auth" }); return; }
-    if (!form.name) return toast.error("Please enter your name.");
+    if (!form.name.trim()) return toast.error("Please enter your name.");
+    if (!form.phone.trim()) return toast.error("Please enter your phone number.");
+    if (!form.payment_method) return toast.error("Please select a payment method.");
     setSaving(true);
     const { error } = await supabase.from("bookings").insert({
       hostel_id: hostel.id,
@@ -338,9 +351,15 @@ function BookingCard({
       sharing_type: form.sharing_type,
       name: form.name,
       phone: form.phone,
+      email: form.email || null,
+      gender: form.gender || null,
+      college: form.college || null,
+      check_in_date: form.check_in_date || null,
+      duration_months: form.duration_months ? Number(form.duration_months) : null,
+      payment_method: form.payment_method,
       message: form.message,
       status: "pending",
-    });
+    } as never);
     setSaving(false);
     if (error) return toast.error("Could not book hostel.");
     toast.success("Booking requested! You can now post complaints as a resident.");
@@ -373,10 +392,46 @@ function BookingCard({
               {SHARING_TYPES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          <div className="space-y-1"><Label className="text-xs">Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
-          <div className="space-y-1"><Label className="text-xs">Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+          <div className="space-y-1"><Label className="text-xs">Full name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1"><Label className="text-xs">Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required /></div>
+            <div className="space-y-1"><Label className="text-xs">Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Gender</Label>
+              <select
+                value={form.gender}
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+              >
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="space-y-1"><Label className="text-xs">College</Label><Input value={form.college} onChange={(e) => setForm({ ...form, college: e.target.value })} /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1"><Label className="text-xs">Check-in date</Label><Input type="date" value={form.check_in_date} onChange={(e) => setForm({ ...form, check_in_date: e.target.value })} /></div>
+            <div className="space-y-1"><Label className="text-xs">Duration (months)</Label><Input type="number" min={1} value={form.duration_months} onChange={(e) => setForm({ ...form, duration_months: e.target.value })} /></div>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Payment method</Label>
+            <select
+              value={form.payment_method}
+              onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
+              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
+            >
+              {PAYMENT_METHODS.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
           <div className="space-y-1"><Label className="text-xs">Note (optional)</Label><Textarea rows={2} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} /></div>
-          <Button type="submit" className="w-full" disabled={saving}>{saving ? "Booking…" : "Confirm booking"}</Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" className="flex-1" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button type="submit" className="flex-1" disabled={saving}>{saving ? "Booking…" : "Confirm & pay"}</Button>
+          </div>
         </form>
       )}
     </div>
