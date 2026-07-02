@@ -47,7 +47,7 @@ function HostelDetails() {
 
   const load = async () => {
     // Owner contact (email, phone) is only readable by authenticated users.
-    const hostelColumns = user ? "*" : PUBLIC_HOSTEL_COLUMNS;
+    const hostelColumns = (user ? "*" : PUBLIC_HOSTEL_COLUMNS) as "*";
     const [{ data: h }, { data: imgs }, { data: rv }, { data: rm }] = await Promise.all([
       supabase.from("hostels").select(hostelColumns).eq("id", id).maybeSingle(),
       supabase.from("hostel_images").select("*").eq("hostel_id", id).order("sort_order"),
