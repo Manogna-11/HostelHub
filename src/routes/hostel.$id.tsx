@@ -262,6 +262,7 @@ function HostelDetails() {
               userId={user?.id}
               userName={profile?.name}
               userPhone={profile?.phone}
+              userEmail={profile?.email}
               onChanged={loadBooking}
             />
             {booking && <ComplaintCard hostelId={id} userId={user?.id} authorName={profile?.name} />}
