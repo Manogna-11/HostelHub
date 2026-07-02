@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Search,
   Home,
@@ -91,6 +92,10 @@ function HostelRowSection({
 
 function Landing() {
   const { data: hostels = [], isLoading: loadingHostels } = useQuery(publishedHostelsQueryOptions);
+  const { user, loading: authLoading } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
 
 
   const featured = useMemo(() => hostels.slice(0, 8), [hostels]);
@@ -115,12 +120,20 @@ function Landing() {
           <Button asChild variant="ghost">
             <Link to="/browse">Browse Hostels</Link>
           </Button>
-          <Button asChild variant="outline">
-            <Link to="/auth">Sign in</Link>
-          </Button>
-          <Button asChild className="hidden sm:inline-flex">
-            <Link to="/auth">Get Started</Link>
-          </Button>
+          {mounted && !authLoading && user ? (
+            <Button asChild variant="outline">
+              <Link to="/dashboard">Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="outline">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild className="hidden sm:inline-flex">
+                <Link to="/auth">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
@@ -175,7 +188,7 @@ function Landing() {
         </div>
       </section>
 
-      {loadingHostels ? (
+      {!mounted || loadingHostels ? (
         <section className="mx-auto max-w-6xl px-6 pb-12">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
