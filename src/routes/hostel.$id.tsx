@@ -46,20 +46,36 @@ function HostelDetails() {
   const [active, setActive] = useState(0);
 
   const load = async () => {
-    // Owner contact (email, phone) is only readable by authenticated users.
-    const hostelColumns = (user ? "*" : PUBLIC_HOSTEL_COLUMNS) as "*";
-    const [{ data: h }, { data: imgs }, { data: rv }, { data: rm }] = await Promise.all([
-      supabase.from("hostels").select(hostelColumns).eq("id", id).maybeSingle(),
+    // Always fetch the columns every role is allowed to read. Selecting owner
+    // contact fields (email, phone) as an anonymous visitor triggers a
+    // PostgREST permission error that would wrongly render "Hostel not found".
+    const [{ data: h, error: hErr }, { data: imgs }, { data: rv }, { data: rm }] = await Promise.all([
+      supabase.from("hostels").select(PUBLIC_HOSTEL_COLUMNS as "*").eq("id", id).maybeSingle(),
       supabase.from("hostel_images").select("*").eq("hostel_id", id).order("sort_order"),
       supabase.from("reviews").select("*").eq("hostel_id", id).order("created_at", { ascending: false }),
       supabase.from("rooms").select("*").eq("hostel_id", id).order("room_number"),
     ]);
-    setHostel((h as Hostel) ?? null);
+    if (hErr) console.error("[hostel] load error", hErr);
+
+    let record = (h as Hostel) ?? null;
+    // Owner contact info is only readable by authenticated users — fetch it
+    // separately so a failure here never hides the whole hostel.
+    if (record && user) {
+      const { data: contact } = await supabase
+        .from("hostels")
+        .select("email,phone")
+        .eq("id", id)
+        .maybeSingle();
+      if (contact) record = { ...record, ...contact } as Hostel;
+    }
+
+    setHostel(record);
     setImages((imgs as Img[]) ?? []);
     setReviews((rv as Review[]) ?? []);
     setRooms((rm as Room[]) ?? []);
     setLoading(false);
   };
+
 
   const loadBooking = async () => {
     if (!user) { setBooking(null); return; }
