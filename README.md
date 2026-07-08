@@ -9,7 +9,7 @@ Designed for educational institutions, private hostels, and student accommodatio
 ---
 ## 🌐 Live Demo
 
-https://smart-dorm-assistant.lovable.app
+(https://smart-dorm-assistant.lovable.app)
 
 
 ## 🔗 Repository
