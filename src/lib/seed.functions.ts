@@ -128,7 +128,8 @@ export const seedDemoData = createServerFn({ method: "POST" })
     if ((count ?? 0) > 0) return { created: 0, message: "Demo data already exists" };
 
     let created = 0;
-    for (const h of HOSTELS) {
+    for (let hIndex = 0; hIndex < HOSTELS.length; hIndex++) {
+      const h = HOSTELS[hIndex];
       const facilities: Record<string, boolean> = {};
       h.facilities.forEach((f) => (facilities[f] = true));
 
