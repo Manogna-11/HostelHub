@@ -20,7 +20,7 @@ export type HostelCardData = {
   available_beds?: number | null;
 };
 
-const PLACEHOLDER = "https://picsum.photos/seed/hostelhub/800/600";
+const PLACEHOLDER = "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80";
 
 export function HostelCard({ hostel }: { hostel: HostelCardData }) {
   const fromFee = Math.min(
