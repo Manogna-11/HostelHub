@@ -1,7 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const IMG = (seed: string) => `https://picsum.photos/seed/${seed}/800/600`;
+const CATEGORY_IMAGE: Record<string, string> = {
+  Building: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80",
+  Rooms: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",
+  Mess: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
+  "Security Area": "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&q=80",
+  "Study Area": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80",
+  Bathroom: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80",
+  Reception: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+};
 const IMG_CATS = ["Building", "Rooms", "Mess", "Security Area", "Study Area", "Bathroom", "Reception"];
 
 type DemoHostel = {
@@ -128,7 +136,7 @@ export const seedDemoData = createServerFn({ method: "POST" })
       await supabaseAdmin.from("hostel_images").insert(
         IMG_CATS.map((cat, i) => ({
           hostel_id: hid,
-          url: IMG(`${h.name.replace(/\s/g, "")}${i}`),
+          url: CATEGORY_IMAGE[cat] ?? "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
           category: cat,
           sort_order: i,
         })),
