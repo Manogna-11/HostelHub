@@ -170,7 +170,7 @@ export const seedDemoData = createServerFn({ method: "POST" })
       await supabaseAdmin.from("hostel_images").insert(
         IMG_CATS.map((cat, i) => ({
           hostel_id: hid,
-          url: CATEGORY_IMAGE[cat] ?? "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+          url: pickImage(cat, hIndex),
           category: cat,
           sort_order: i,
         })),
