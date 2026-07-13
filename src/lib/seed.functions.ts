@@ -1,16 +1,49 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const CATEGORY_IMAGE: Record<string, string> = {
-  Building: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80",
-  Rooms: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",
-  Mess: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
-  "Security Area": "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&q=80",
-  "Study Area": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80",
-  Bathroom: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80",
-  Reception: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+const CATEGORY_POOL: Record<string, string[]> = {
+  Building: [
+    "1555854877-bab0e564b8d5", "1502672260266-1c1ef2d93688", "1512917774080-9991f1c4c750",
+    "1486406146926-c627a92ad1ab", "1493809842364-78817add7ffb", "1449844908441-8829872d2607",
+    "1568605114967-8130f3a36994", "1494526585095-c41746248156",
+  ],
+  Rooms: [
+    "1540518614846-7eded433c457", "1522771739844-6a9f6d5f14af", "1595526114035-0d45ed16cfbf",
+    "1560185007-c5ca9d2c014d", "1505693416388-ac5ce068fe85", "1631049307264-da0ec9d70304",
+    "1616627561950-9f746e330187", "1616486338812-3dadae4b4ace",
+  ],
+  Mess: [
+    "1517248135467-4c7edcad34c4", "1555396273-367ea4eb4db5", "1414235077428-338989a2e8c0",
+    "1590846406792-0adc7f938f1d", "1424847651672-bf20a4b0982b", "1466978913421-dad2ebd01d17",
+    "1467003909585-2f8a72700288", "1504674900247-0877df9cc836",
+  ],
+  "Security Area": [
+    "1558002038-1055907df827", "1557597774-9d273605dfa9", "1521791136064-7986c2920216",
+    "1590650153855-d9e808231d41", "1497366216548-37526070297c", "1556761175-5973dc0f32e7",
+  ],
+  "Study Area": [
+    "1481627834876-b7833e8f5570", "1497633762265-9d179a990aa6", "1524995997946-a1c2e315a42f",
+    "1521587760476-6c12a4b040da", "1519389950473-47ba0277781c", "1498050108023-c5249f4df085",
+    "1516321318423-f06f85e504b3",
+  ],
+  Bathroom: [
+    "1552321554-5fefe8c9ef14", "1584622650111-993a426fbf0a", "1600566752355-35792bedcfea",
+    "1600607687939-ce8a6c25118c", "1620626011761-996317b8d101", "1595515106969-1ce29566ff1c",
+  ],
+  Reception: [
+    "1566073771259-6a8506099945", "1618773928121-c32242e63f39", "1590490360182-c33d57733427",
+    "1551882547-ff40c63fe5fa", "1564501049412-61c2a3083791", "1571003123894-1f0594d2b5d9",
+  ],
 };
 const IMG_CATS = ["Building", "Rooms", "Mess", "Security Area", "Study Area", "Bathroom", "Reception"];
+
+/** Picks a distinct image per hostel + category so no two hostels share the same photos. */
+function pickImage(cat: string, hostelIndex: number): string {
+  const pool = CATEGORY_POOL[cat] ?? CATEGORY_POOL.Building;
+  const offset = IMG_CATS.indexOf(cat) * 3;
+  const id = pool[(hostelIndex + offset) % pool.length];
+  return `https://images.unsplash.com/photo-${id}?w=800&q=80`;
+}
 
 type DemoHostel = {
   name: string;
@@ -95,7 +128,8 @@ export const seedDemoData = createServerFn({ method: "POST" })
     if ((count ?? 0) > 0) return { created: 0, message: "Demo data already exists" };
 
     let created = 0;
-    for (const h of HOSTELS) {
+    for (let hIndex = 0; hIndex < HOSTELS.length; hIndex++) {
+      const h = HOSTELS[hIndex];
       const facilities: Record<string, boolean> = {};
       h.facilities.forEach((f) => (facilities[f] = true));
 
@@ -136,7 +170,7 @@ export const seedDemoData = createServerFn({ method: "POST" })
       await supabaseAdmin.from("hostel_images").insert(
         IMG_CATS.map((cat, i) => ({
           hostel_id: hid,
-          url: CATEGORY_IMAGE[cat] ?? "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+          url: pickImage(cat, hIndex),
           category: cat,
           sort_order: i,
         })),
