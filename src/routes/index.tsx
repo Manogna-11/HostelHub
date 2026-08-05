@@ -29,12 +29,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Discover, compare and book student hostels and PG accommodations near your college with AI-powered search, verified reviews and instant inquiries.",
+          "Compare student hostels and PGs near your college by budget, gender and amenities. AI search, verified reviews and instant booking requests.",
       },
-      { property: "og:title", content: "HostelHub — Find Student Hostels & PGs" },
+      { property: "og:title", content: "HostelHub — Find & Book Student Hostels and PGs" },
       {
         property: "og:description",
-        content: "AI-powered hostel discovery for students. Search by college, budget, gender and amenities.",
+        content:
+          "Compare student hostels and PGs near your college by budget, gender and amenities. AI search, verified reviews and instant booking requests.",
       },
     ],
   }),
